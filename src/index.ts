@@ -1,4 +1,15 @@
-const applicationName = "Cloud Energy Monitor";
+import express from "express";
 
-console.log(`Application: ${applicationName}`);
-console.log("Status: application started successfully.");
+const app = express();
+const port = 3000;
+
+app.get("/health", (_request, response) => {
+  response.json({
+    status: "ok",
+    application: "Cloud Energy Monitor",
+  });
+});
+
+app.listen(port, () => {
+  console.log(`Cloud Energy Monitor running on port ${port}`);
+});
