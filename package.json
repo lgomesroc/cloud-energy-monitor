@@ -1,13 +1,13 @@
 {
   "name": "cloud-energy-monitor",
   "version": "1.0.0",
-  "description": "",
+  "description": "Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless e serviços da AWS utilizando TypeScript.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "node --watch dist/index.js"
+    "start": "node dist/server.js",
+    "dev": "node --watch dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -16,9 +16,18 @@
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^26.2.0",
+    "tsx": "^4.23.12",
     "typescript": "^7.0.2"
   },
   "dependencies": {
     "express": "^5.2.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lgomesroc/cloud-energy-monitor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lgomesroc/cloud-energy-monitor/issues"
+  },
+  "homepage": "https://github.com/lgomesroc/cloud-energy-monitor#readme"
 }

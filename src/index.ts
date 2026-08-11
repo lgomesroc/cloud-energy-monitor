@@ -1,7 +1,6 @@
 import express from "express";
 
 const app = express();
-const port = 3000;
 
 app.get("/health", (_request, response) => {
   response.json({
@@ -10,6 +9,4 @@ app.get("/health", (_request, response) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Cloud Energy Monitor running on port ${port}`);
-});
+export default app;
