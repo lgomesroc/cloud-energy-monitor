@@ -44,7 +44,7 @@ cloud-energy-monitor/
 
 ## Status
 
-**Em desenvolvimento — Dia 2 em andamento.**
+**Em desenvolvimento — Dia 2 concluído.**
 
 ### Dia 1
 
