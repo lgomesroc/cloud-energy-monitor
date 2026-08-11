@@ -129,7 +129,8 @@ curl http://localhost:3000/health
 
 ### Scripts
 
-Comando	        Função
-`npm run build`	Compila o TypeScript para JavaScript
-`npm start`	    Executa a aplicação compilada
-`npm run dev`	Executa a aplicação compilada com Node.js Watch
+| Comando | Função |
+|---|---|
+| `npm run build` | Compila o TypeScript para JavaScript |
+| `npm start` | Executa a aplicação compilada |
+| `npm run dev` | Executa a aplicação compilada com Node.js Watch |
