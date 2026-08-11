@@ -32,7 +32,8 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 ```text
 cloud-energy-monitor/
 ├── src/
-│   └── index.ts
+│   ├── index.ts
+│   └── server.ts
 ├── .gitignore
 ├── README.md
 ├── package.json
@@ -43,7 +44,7 @@ cloud-energy-monitor/
 
 ## Status
 
-**Em desenvolvimento — Dia 1 concluído.**
+**Em desenvolvimento — Dia 2 em andamento.**
 
 ### Dia 1
 
@@ -63,6 +64,19 @@ cloud-energy-monitor/
 - [x] Endpoint GET /health
 - [x] Teste da API com curl
 - [x] Projeto compilando e executando localmente
+
+### Dia 2
+
+- [x] Separação entre configuração da aplicação e inicialização do servidor
+- [x] Criação do `src/server.ts`
+- [x] `src/index.ts` responsável pela configuração e exportação do Express
+- [x] `src/server.ts` responsável pela inicialização do servidor HTTP
+- [x] Atualização dos scripts `start` e `dev` para utilizar `dist/server.js`
+- [x] Remoção do Fastify, mantendo Express como framework HTTP
+- [x] Compilação do projeto com TypeScript
+- [x] Teste da aplicação localmente
+- [x] Validação do endpoint `GET /health` com `curl`
+- [x] Commit das alterações
 
 ### Próximas etapas
 
