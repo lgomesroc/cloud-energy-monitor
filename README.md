@@ -80,7 +80,6 @@ cloud-energy-monitor/
 
 ### Próximas etapas
 
-- [ ] Refatorar a estrutura da aplicação
 - [ ] Criar domínio de consumo de energia
 - [ ] Adicionar persistência local
 - [ ] Estudar DynamoDB
