@@ -9,7 +9,9 @@ Construir uma aplicação capaz de registrar e consultar dados de consumo de ene
 O projeto será desenvolvido inicialmente de forma local, permitindo estudar os conceitos e a arquitetura sem depender de infraestrutura AWS paga.
 
 ## Tecnologias
+
 ### Atualmente utilizadas
+
 - Node.js 24.19.0
 - TypeScript 7.0.2
 - Express 5.2.1
@@ -18,6 +20,7 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 - VS Code
 
 ### Planejadas
+
 - AWS
 - AWS CDK
 - DynamoDB
@@ -32,6 +35,12 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 ```text
 cloud-energy-monitor/
 ├── src/
+│   ├── data/
+│   │   └── energy-readings.ts
+│   ├── domain/
+│   │   └── energy-reading.ts
+│   ├── routes/
+│   │   └── energy.routes.ts
 │   ├── index.ts
 │   └── server.ts
 ├── .gitignore
@@ -44,7 +53,7 @@ cloud-energy-monitor/
 
 ## Status
 
-**Em desenvolvimento — Dia 2 concluído.**
+**Em desenvolvimento — Dia 3 concluído.**
 
 ### Dia 1
 
@@ -78,11 +87,24 @@ cloud-energy-monitor/
 - [x] Validação do endpoint `GET /health` com `curl`
 - [x] Commit das alterações
 
+### Dia 3
+- [x] Criação do domínio EnergyReading
+- [x] Definição dos dados de uma leitura de consumo
+- [x] Criação de dados simulados em memória
+- [x] Criação da rota GET /api/energy
+- [x] Separação entre domínio, dados e rotas
+- [x] Integração da rota de energia ao Express
+- [x] Compilação do projeto com TypeScript
+- [x] Validação do endpoint GET /health
+- [x] Validação do endpoint GET /api/energy com curl
+- [x] Commit das alterações
+- [x] Push das alterações para o GitHub
+
 ### Próximas etapas
 
-- [ ] Criar domínio de consumo de energia
-- [ ] Adicionar persistência local
+- [ ] Evoluir o modelo de consumo de energia
 - [ ] Estudar DynamoDB
+- [ ] Integrar persistência com DynamoDB
 - [ ] Estudar AWS Lambda
 - [ ] Integrar API Gateway
 - [ ] Introduzir AWS CDK
@@ -94,11 +116,12 @@ cloud-energy-monitor/
 - [ ] Documentar a arquitetura final
 
 ## API atual
+
 ### Health Check
 
 **GET `/health`**
 
-## Endpoint utilizado para verificar se a aplicação está funcionando.
+Endpoint utilizado para verificar se a aplicação está funcionando.
 
 Resposta:
 
@@ -107,6 +130,34 @@ Resposta:
   "status": "ok",
   "application": "Cloud Energy Monitor"
 }
+```
+
+### Energy Readings
+
+**GET `/api/energy`**
+
+Retorna as leituras de consumo de energia disponíveis atualmente em memória.
+
+Resposta:
+
+```json
+[
+  {
+    "deviceId": "device-001",
+    "timestamp": "2026-08-12T09:00:00Z",
+    "consumptionKwh": 1.42
+  },
+  {
+    "deviceId": "device-002",
+    "timestamp": "2026-08-12T09:05:00Z",
+    "consumptionKwh": 2.18
+  },
+  {
+    "deviceId": "device-003",
+    "timestamp": "2026-08-12T09:10:00Z",
+    "consumptionKwh": 0.97
+  }
+]
 ```
 
 ## Execução local
@@ -126,6 +177,11 @@ Inicie a aplicação:
 
 ```bash
 npm start
+```
+
+Para desenvolvimento:
+```bash
+npm run dev
 ```
 
 A API ficará disponível em:
