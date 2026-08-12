@@ -196,6 +196,12 @@ Para testar o health check:
 curl http://localhost:3000/health
 ```
 
+Para testar o endpoint de leituras de consumo de energia:
+
+```bash
+curl http://localhost:3000/api/energy
+```
+
 ### Scripts
 
 | Comando | Função |
