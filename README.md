@@ -41,6 +41,8 @@ cloud-energy-monitor/
 │   │   └── energy-reading.ts
 │   ├── routes/
 │   │   └── energy.routes.ts
+│   ├── services/
+│   │   └── energy.service.ts
 │   ├── index.ts
 │   └── server.ts
 ├── .gitignore
@@ -53,7 +55,7 @@ cloud-energy-monitor/
 
 ## Status
 
-**Em desenvolvimento — Dia 3 concluído.**
+**Em desenvolvimento — Dia 4 concluído.**
 
 ### Dia 1
 
@@ -102,7 +104,7 @@ cloud-energy-monitor/
 
 ### Dia 4 — Separação da camada de serviço
 
-- [x] Criada a camada `services` para separar o acesso aos dados da camada de rotas.
+- [x] Criada a pasta`src/services` para separar o acesso aos dados da camada de rotas.
 - [x] Criado `energy.service.ts` com a função `getEnergyReadings()`.
 - [x] Atualizada a rota `GET /api/energy` para utilizar o service.
 - [x] Mantida a fonte de dados em memória em `src/data/energy-readings.ts`.
@@ -111,6 +113,7 @@ cloud-energy-monitor/
 
 ### Próximas etapas
 
+- [ ] Criar uma camada de repositório para acesso aos dados
 - [ ] Evoluir o modelo de consumo de energia
 - [ ] Estudar DynamoDB
 - [ ] Integrar persistência com DynamoDB
