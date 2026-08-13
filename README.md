@@ -100,6 +100,15 @@ cloud-energy-monitor/
 - [x] Commit das alterações
 - [x] Push das alterações para o GitHub
 
+### Dia 4 — Separação da camada de serviço
+
+- [x] Criada a camada `services` para separar o acesso aos dados da camada de rotas.
+- [x] Criado `energy.service.ts` com a função `getEnergyReadings()`.
+- [x] Atualizada a rota `GET /api/energy` para utilizar o service.
+- [x] Mantida a fonte de dados em memória em `src/data/energy-readings.ts`.
+- [x] Executado `npm run build` com sucesso.
+- [x] Testado `GET /api/energy` com `curl`, retornando as leituras de energia esperadas.
+
 ### Próximas etapas
 
 - [ ] Evoluir o modelo de consumo de energia

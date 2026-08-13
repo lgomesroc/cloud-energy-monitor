@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { energyReadings } from "../data/energy-readings.js";
+import { getEnergyReadings } from "../services/energy.service.js";
 
 const energyRouter = Router();
 
 energyRouter.get("/energy", (_request, response) => {
-  response.json(energyReadings);
+  response.json(getEnergyReadings());
 });
 
 export default energyRouter;
