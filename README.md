@@ -39,6 +39,8 @@ cloud-energy-monitor/
 │   │   └── energy-readings.ts
 │   ├── domain/
 │   │   └── energy-reading.ts
+│   ├── repositories/
+│   │   └── energy.repository.ts
 │   ├── routes/
 │   │   └── energy.routes.ts
 │   ├── services/
@@ -55,7 +57,7 @@ cloud-energy-monitor/
 
 ## Status
 
-**Em desenvolvimento — Dia 4 concluído.**
+**Em desenvolvimento — Dia 5 concluído.**
 
 ### Dia 1
 
@@ -111,9 +113,22 @@ cloud-energy-monitor/
 - [x] Executado `npm run build` com sucesso.
 - [x] Testado `GET /api/energy` com `curl`, retornando as leituras de energia esperadas.
 
+### Dia 5 — Criação da camada de repositório
+
+- [x] Criada a pasta `src/repositories`.
+- [x] Criado `energy.repository.ts` para centralizar o acesso aos dados de energia.
+- [x] Removido o acesso direto aos dados do `energy.service.ts`.
+- [x] Definido o retorno do Repository como `EnergyReading[]`.
+- [x] Utilizado `import type` para importação do domínio conforme `verbatimModuleSyntax`.
+- [x] Retorno do Repository protegido com uma cópia do array em memória.
+- [x] Definido o retorno do Service como `EnergyReading[]`.
+- [x] Executado `npm run build` com sucesso.
+- [x] Validado `GET /api/energy` com `curl`.
+- [x] Validado `GET /health` com `curl`.
+- [x] Commit e push das alterações para o GitHub.
+
 ### Próximas etapas
 
-- [ ] Criar uma camada de repositório para acesso aos dados
 - [ ] Evoluir o modelo de consumo de energia
 - [ ] Estudar DynamoDB
 - [ ] Integrar persistência com DynamoDB
