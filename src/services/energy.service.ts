@@ -1,5 +1,5 @@
-import { energyReadings } from "../data/energy-readings.js";
+import { findAllEnergyReadings } from "../repositories/energy.repository.js";
 
 export function getEnergyReadings() {
-  return energyReadings;
+  return findAllEnergyReadings();
 }
