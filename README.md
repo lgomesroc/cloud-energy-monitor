@@ -15,15 +15,16 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 - Node.js 24.19.0
 - TypeScript 7.0.2
 - Express 5.2.1
+- Vitest
+- AWS SDK for JavaScript
+- DynamoDB Local
 - Docker
 - Git
 - VS Code
 
 ### Planejadas
 
-- AWS
 - AWS CDK
-- DynamoDB
 - AWS Lambda
 - API Gateway
 - Amazon SQS
@@ -35,16 +36,24 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 ```text
 cloud-energy-monitor/
 ├── src/
+│   ├── config/
+│   │   ├── dynamodb.ts
+│   │   ├── create-table.ts
+│   │   ├── insert-reading.ts
+│   │   ├── list-readings.ts
+│   │   └── query-readings.ts
 │   ├── data/
 │   │   └── energy-readings.ts
 │   ├── domain/
 │   │   └── energy-reading.ts
 │   ├── repositories/
-│   │   └── energy.repository.ts
+│   │   ├── energy.repository.ts
+│   │   └── energy.repository.test.ts
 │   ├── routes/
 │   │   └── energy.routes.ts
 │   ├── services/
-│   │   └── energy.service.ts
+│   │   ├── energy.service.ts
+│   │   └── energy.service.test.ts
 │   ├── index.ts
 │   └── server.ts
 ├── .gitignore
@@ -52,12 +61,13 @@ cloud-energy-monitor/
 ├── package.json
 ├── package-lock.json
 └── tsconfig.json
+└── vitest.config.ts
 ```
 > Os diretórios node_modules/ e dist/ são gerados localmente e não são versionados pelo Git.
 
 ## Status
 
-**Em desenvolvimento — Dia 5 concluído.**
+**Em desenvolvimento — Dia 6 concluído.**
 
 ### Dia 1
 
@@ -127,20 +137,140 @@ cloud-energy-monitor/
 - [x] Validado `GET /health` com `curl`.
 - [x] Commit e push das alterações para o GitHub.
 
+### Aula 6 — Testes, mocking e persistência com DynamoDB
+
+#### Testes e mocking
+
+- [x] Configuração do Vitest para testes automatizados.
+- [x] Criação de testes unitários para o Repository.
+- [x] Criação de testes unitários para o Service.
+- [x] Utilização de mocking com Vitest para isolar o Service do Repository.
+- [x] Validação do comportamento das camadas de Repository e Service.
+- [x] Execução dos testes automatizados com `npm test`.
+- [x] Configuração do Vitest para ignorar os arquivos compilados em dist/
+- [x] Todos os testes passando com sucesso.
+
+#### DynamoDB
+
+- [x] Execução do DynamoDB Local utilizando Docker.
+- [x] Instalação do AWS SDK for JavaScript.
+- [x] Configuração do `DynamoDBClient`.
+- [x] Configuração do DynamoDB Document Client.
+- [x] Criação da tabela `CloudEnergyReadings`.
+- [x] Definição de `deviceId` como chave de partição.
+- [x] Inserção de leituras de consumo no DynamoDB.
+- [x] Consulta das leituras utilizando `Scan`.
+- [x] Consulta das leituras de um dispositivo utilizando `Query`.
+- [x] Integração do DynamoDB com a camada de Repository.
+- [x] Integração do Repository com a camada de Service.
+- [x] Exposição das consultas através da API REST.
+- [x] Validação dos endpoints utilizando `curl`.
+
+#### Scan e Query
+
+O projeto utiliza operações básicas do DynamoDB de acordo com o tipo de consulta:
+
+> **Scan** é utilizado para percorrer os itens disponíveis na tabela, sem informar uma chave específica para a consulta.
+
+> **Query** permite consultar itens a partir da chave de partição, sendo utilizado no projeto para buscar as leituras de um dispositivo específico.
+
+No Cloud Energy Monitor:
+
+- `GET /api/energy` utiliza `Scan` para consultar as leituras da tabela.
+- `GET /api/energy/:deviceId` utiliza `Query` para consultar as leituras de um dispositivo utilizando `deviceId` como chave de partição.
+
+#### Paginação
+
+O projeto também possui uma implementação inicial de paginação utilizando os recursos disponíveis no DynamoDB.
+
+Foram estudados os seguintes conceitos:
+
+- `Limit`: define a quantidade máxima de itens retornados em uma consulta.
+- `LastEvaluatedKey`: informa que existem mais itens disponíveis para consulta e indica a chave utilizada para continuar a busca.
+- `ExclusiveStartKey`: permite continuar uma consulta a partir da chave informada.
+
+Fluxo simplificado:
+
+```text
+Primeira consulta
+      ↓
+DynamoDB
+      ↓
+Itens + LastEvaluatedKey
+      ↓
+Próxima consulta
+      ↓
+ExclusiveStartKey
+      ↓
+Próximos itens
+```
+
+No projeto, a paginação foi adicionada ao endpoint:
+
+`GET /api/energy?limit=2`
+
+Exemplo de resposta:
+
+```json
+{
+  "readings": [
+    {
+      "deviceId": "device-002",
+      "consumptionKwh": 2.18,
+      "timestamp": "2026-08-15T12:05:00Z"
+    },
+    {
+      "deviceId": "device-001",
+      "consumptionKwh": 1.75,
+      "timestamp": "2026-08-15T12:00:00Z"
+    }
+  ],
+  "lastEvaluatedKey": {
+    "deviceId": "device-001",
+    "timestamp": "2026-08-15T12:00:00Z"
+  }
+}
+```
+
+A aplicação utiliza essa chave para trabalhar com consultas paginadas e continuar a busca pelos próximos registros.
+
+> A paginação foi estudada e implementada utilizando o DynamoDB Local, permitindo praticar o conceito sem utilizar recursos pagos da AWS.
+
+#### Arquitetura atual
+
+```text
+HTTP Request
+     ↓
+   Route
+     ↓
+  Service
+     ↓
+ Repository
+     ↓
+DynamoDB Local
+```
+
+O projeto utiliza uma separação simples de responsabilidades:
+
+- **Route**: recebe as requisições HTTP e retorna as respostas.
+- **Service**: concentra a lógica da aplicação.
+- **Repository**: responsável pelo acesso aos dados.
+- **DynamoDB**: responsável pela persistência das leituras.
+
+> **DynamoDB Local foi utilizado para desenvolvimento e testes, sem necessidade de utilizar recursos pagos da AWS.**
+
 ### Próximas etapas
 
-- [ ] Evoluir o modelo de consumo de energia
-- [ ] Estudar DynamoDB
-- [ ] Integrar persistência com DynamoDB
-- [ ] Estudar AWS Lambda
-- [ ] Integrar API Gateway
-- [ ] Introduzir AWS CDK
-- [ ] Adicionar processamento assíncrono
-- [ ] Adicionar testes automatizados
-- [ ] Adicionar CI/CD
-- [ ] Arquitetura serverless
-- [ ] Infraestrutura como código
-- [ ] Documentar a arquitetura final
+- [ ] Melhorar o modelo de consulta do DynamoDB.
+- [ ] Implementar tratamento de erros da API.
+- [ ] Adicionar validação das requisições.
+- [ ] Estudar AWS Lambda.
+- [ ] Integrar API Gateway.
+- [ ] Introduzir AWS CDK.
+- [ ] Adicionar processamento assíncrono.
+- [ ] Adicionar CI/CD.
+- [ ] Evoluir para uma arquitetura serverless.
+- [ ] Documentar a arquitetura final.
 
 ## API atual
 
@@ -163,26 +293,36 @@ Resposta:
 
 **GET `/api/energy`**
 
-Retorna as leituras de consumo de energia disponíveis atualmente em memória.
+Retorna as leituras de consumo de energia armazenadas no DynamoDB.
+
+Com paginação:
+
+```bash
+curl "http://localhost:3000/api/energy?limit=2"
+```
+
+A resposta contém as leituras retornadas e, quando houver mais resultados, uma chave para continuar a consulta.
+
+
+### Energy Readings por dispositivo
+
+**GET** `/api/energy/:deviceId`
+
+Retorna as leituras associadas a um dispositivo específico.
+
+Exemplo:
+
+```bash
+curl http://localhost:3000/api/energy/device-002
+```
 
 Resposta:
-
 ```json
 [
   {
-    "deviceId": "device-001",
-    "timestamp": "2026-08-12T09:00:00Z",
-    "consumptionKwh": 1.42
-  },
-  {
     "deviceId": "device-002",
-    "timestamp": "2026-08-12T09:05:00Z",
-    "consumptionKwh": 2.18
-  },
-  {
-    "deviceId": "device-003",
-    "timestamp": "2026-08-12T09:10:00Z",
-    "consumptionKwh": 0.97
+    "consumptionKwh": 2.18,
+    "timestamp": "2026-08-15T12:05:00Z"
   }
 ]
 ```
@@ -227,6 +367,18 @@ Para testar o endpoint de leituras de consumo de energia:
 
 ```bash
 curl http://localhost:3000/api/energy
+```
+
+Para testar a paginação:
+
+```bash
+curl "http://localhost:3000/api/energy?limit=2"
+```
+
+Para consultar um dispositivo:
+
+```bash
+curl http://localhost:3000/api/energy/device-002
 ```
 
 ### Scripts

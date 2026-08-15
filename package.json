@@ -4,7 +4,7 @@
   "description": "Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless e serviços da AWS utilizando TypeScript.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "node --watch dist/server.js"
@@ -17,9 +17,12 @@
     "@types/express": "^5.0.6",
     "@types/node": "^26.2.0",
     "tsx": "^4.23.12",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1111.0",
+    "@aws-sdk/lib-dynamodb": "^3.1111.0",
     "express": "^5.2.1"
   },
   "repository": {
