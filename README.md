@@ -69,7 +69,7 @@ cloud-energy-monitor/
 
 **Em desenvolvimento — Dia 6 concluído.**
 
-### Dia 1
+### Aula 1 - Configuração inicial e criação da API
 
 - [x] Configuração do Node.js
 - [x] Configuração do TypeScript
@@ -88,7 +88,7 @@ cloud-energy-monitor/
 - [x] Teste da API com curl
 - [x] Projeto compilando e executando localmente
 
-### Dia 2
+### Aula 2 - Organização da aplicação e inicialização do servidor
 
 - [x] Separação entre configuração da aplicação e inicialização do servidor
 - [x] Criação do `src/server.ts`
@@ -101,7 +101,8 @@ cloud-energy-monitor/
 - [x] Validação do endpoint `GET /health` com `curl`
 - [x] Commit das alterações
 
-### Dia 3
+### Aula 3 - Domínio e primeiros endpoints de energia
+
 - [x] Criação do domínio EnergyReading
 - [x] Definição dos dados de uma leitura de consumo
 - [x] Criação de dados simulados em memória
@@ -114,7 +115,7 @@ cloud-energy-monitor/
 - [x] Commit das alterações
 - [x] Push das alterações para o GitHub
 
-### Dia 4 — Separação da camada de serviço
+### Aula 4 — Separação da camada de serviço
 
 - [x] Criada a pasta`src/services` para separar o acesso aos dados da camada de rotas.
 - [x] Criado `energy.service.ts` com a função `getEnergyReadings()`.
@@ -123,7 +124,7 @@ cloud-energy-monitor/
 - [x] Executado `npm run build` com sucesso.
 - [x] Testado `GET /api/energy` com `curl`, retornando as leituras de energia esperadas.
 
-### Dia 5 — Criação da camada de repositório
+### Aula 5 — Criação da camada de repositório
 
 - [x] Criada a pasta `src/repositories`.
 - [x] Criado `energy.repository.ts` para centralizar o acesso aos dados de energia.
@@ -258,6 +259,18 @@ O projeto utiliza uma separação simples de responsabilidades:
 - **DynamoDB**: responsável pela persistência das leituras.
 
 > **DynamoDB Local foi utilizado para desenvolvimento e testes, sem necessidade de utilizar recursos pagos da AWS.**
+
+## Próxima aula
+
+### Aula 7 → Tratamento de erros e validação
+
+- [ ] Tratamento de erros no acesso ao DynamoDB
+- [ ] Tratamento de erros na Route
+- [ ] Validação do parâmetro `limit`
+- [ ] Validação do lastKey
+- [ ] Uso básico de status HTTP
+- [ ] Testes automatizados
+- [ ] Validação manual com curl
 
 ### Próximas etapas
 
