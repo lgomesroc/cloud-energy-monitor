@@ -16,6 +16,7 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 - TypeScript 7.0.2
 - Express 5.2.1
 - Vitest
+- Supertest
 - AWS SDK for JavaScript
 - DynamoDB Local
 - Docker
@@ -51,6 +52,7 @@ cloud-energy-monitor/
 │   │   └── energy.repository.test.ts
 │   ├── routes/
 │   │   └── energy.routes.ts
+│   │   └── energy.routes.test.ts
 │   ├── services/
 │   │   ├── energy.service.ts
 │   │   └── energy.service.test.ts
@@ -65,9 +67,32 @@ cloud-energy-monitor/
 ```
 > Os diretórios node_modules/ e dist/ são gerados localmente e não são versionados pelo Git.
 
+## Arquitetura atual
+
+```text
+HTTP Request
+     ↓
+   Route
+     ↓
+  Service
+     ↓
+ Repository
+     ↓
+DynamoDB Local
+```
+
+O projeto utiliza uma separação simples de responsabilidades:
+
+- **Route**: recebe as requisições HTTP e retorna as respostas.
+- **Service**: concentra a lógica da aplicação.
+- **Repository**: responsável pelo acesso aos dados.
+- **DynamoDB**: responsável pela persistência das leituras.
+
+> **DynamoDB Local foi utilizado para desenvolvimento e testes, sem necessidade de utilizar recursos pagos da AWS.**
+
 ## Status
 
-**Em desenvolvimento — Dia 6 concluído.**
+**Em desenvolvimento — Dia 7 concluído.**
 
 ### Aula 1 - Configuração inicial e criação da API
 
@@ -167,7 +192,199 @@ cloud-energy-monitor/
 - [x] Exposição das consultas através da API REST.
 - [x] Validação dos endpoints utilizando `curl`.
 
-#### Scan e Query
+### Aula 7 → Validação, tratamento de erros e testes de integração HTTP
+
+#### Validação
+- [x] Validação do parâmetro limit
+- [x] Limite mínimo de 1
+- [x] Limite máximo de 100
+- [x] Validação do parâmetro lastKey
+- [x] Tratamento de lastKey inválido
+- [x] Retorno de HTTP 400 Bad Request para parâmetros inválidos
+
+#### Tratamento de erros
+
+- [x] Tratamento de erros no acesso ao DynamoDB
+- [x] Tratamento de erros na Route
+- [x] Retorno de HTTP 500 Internal Server Error
+- [x] Mensagem de erro genérica para o cliente
+- [x] Registro do erro no console durante o desenvolvimento
+
+#### Testes HTTP
+
+- [x] Instalação do Supertest
+- [x] Instalação dos tipos @types/supertest
+- [x] Testes das rotas HTTP
+- [x] Teste do endpoint GET /api/energy
+- [x] Teste de paginação
+- [x] Teste de limit inválido
+- [x] Teste de lastKey inválido
+- [x] Teste de erro interno
+- [x] Teste do endpoint GET /api/energy/:deviceId
+- [x] Teste de erro na consulta por dispositivo
+- [x] Execução de todos os testes automatizados
+
+Atualmente:
+```text
+Test Files  3 passed (3)
+Tests       14 passed (14)
+```
+
+## Próxima aula
+
+### Aula 8 — AWS Lambda
+
+- [ ] Entender o que é AWS Lambda
+- [ ] Entender como Lambda se encaixa no projeto
+- [ ] Instalar o necessário para trabalhar com Lambda
+- [ ] Criar o primeiro Lambda Handler
+- [ ] Fazer o Handler receber uma requisição
+- [ ] Fazer o Handler retornar uma resposta HTTP
+- [ ] Integrar o Handler com o Service
+- [ ] Manter o Repository e DynamoDB Local
+- [ ] Executar o Lambda localmente
+- [ ] Criar testes automatizados para o Handler
+- [ ] Rodar todos os testes do projeto
+- [ ] Atualizar a estrutura de pastas no README
+- [ ] Atualizar a documentação da arquitetura
+
+### Próximas etapas
+
+- [ ] Revisar e melhorar a documentação da API.
+- [ ] Melhorar o modelo de consulta do DynamoDB.
+- [ ] Estudar AWS Lambda.
+- [ ] Integrar API Gateway.
+- [ ] Introduzir AWS CDK.
+- [ ] Adicionar processamento assíncrono.
+- [ ] Estudar Amazon SQS.
+- [ ] Estudar CloudWatch.
+- [ ] Adicionar CI/CD.
+- [ ] Evoluir gradualmente para uma arquitetura serverless.
+- [ ] Documentar a arquitetura final.
+
+## Iniciando
+
+### DynamoDB Local
+
+O projeto utiliza o DynamoDB Local para desenvolvimento e testes.
+
+O DynamoDB Local é executado através de um container Docker e permite trabalhar com a API do DynamoDB localmente, sem utilizar uma tabela real na AWS.
+
+#### Inicie o container:
+
+```bash
+docker start dynamodb-local
+```
+
+Caso o container ainda não exista, crie-o:
+
+```bash
+docker run -d \
+  --name dynamodb-local \
+  -p 8000:8000 \
+  amazon/dynamodb-local
+```
+
+Depois, crie a tabela:
+
+```bash
+npx tsx src/config/create-table.ts
+```
+
+Para inserir as leituras de exemplo:
+
+```bash
+npx tsx src/config/insert-reading.ts
+```
+
+Esses comandos são necessários apenas para preparar o ambiente local. A tabela permanece disponível enquanto o container estiver ativo.
+
+Para verificar o container:
+
+```bash
+docker ps
+```
+
+O container deve apresentar a porta:
+
+```text
+0.0.0.0:8000->8000/tcp
+```
+
+#### Criar a tabela
+
+Após iniciar o DynamoDB Local, execute:
+
+```bash
+npx tsx src/config/create-table.ts
+```
+
+O script cria a tabela:
+
+```text
+CloudEnergyReadings
+```
+
+A tabela utiliza:
+
+```text
+Partition Key: deviceId
+Sort Key: timestamp
+```
+
+O script também verifica o status da tabela após a criação.
+
+#### Inserir dados de exemplo
+
+Para inserir as leituras utilizadas durante o desenvolvimento e os testes manuais:
+
+```bash
+npx tsx src/config/insert-reading.ts
+```
+
+O script insere as leituras definidas em:
+
+```text
+src/config/insert-reading.ts
+```
+
+Esses comandos são utilizados para preparar o ambiente local antes de executar a aplicação e realizar testes manuais com o DynamoDB.
+
+> Os scripts de configuração são executados manualmente neste momento. A automação dessa inicialização poderá ser estudada posteriormente caso seja útil para o projeto.
+
+### Testes
+
+Execute todos os testes automatizados com:
+
+```bash
+npm test
+```
+
+Os testes atuais estão organizados por camada:
+
+```text
+src/
+├── repositories/
+│   └── energy.repository.test.ts
+├── routes/
+│   └── energy.routes.test.ts
+└── services/
+    └── energy.service.test.ts
+```
+
+Os testes cobrem atualmente:
+
+- Service
+- Repository
+- Routes
+- Paginação
+- Validação de parâmetros
+- Tratamento de erros
+- Respostas HTTP
+- Consulta por dispositivo
+- Integração do Repository com o DynamoDB Local
+
+### Scan e Query
 
 O projeto utiliza operações básicas do DynamoDB de acordo com o tipo de consulta:
 
@@ -180,7 +397,7 @@ No Cloud Energy Monitor:
 - `GET /api/energy` utiliza `Scan` para consultar as leituras da tabela.
 - `GET /api/energy/:deviceId` utiliza `Query` para consultar as leituras de um dispositivo utilizando `deviceId` como chave de partição.
 
-#### Paginação
+### Paginação
 
 O projeto também possui uma implementação inicial de paginação utilizando os recursos disponíveis no DynamoDB.
 
@@ -237,54 +454,6 @@ A aplicação utiliza essa chave para trabalhar com consultas paginadas e contin
 
 > A paginação foi estudada e implementada utilizando o DynamoDB Local, permitindo praticar o conceito sem utilizar recursos pagos da AWS.
 
-#### Arquitetura atual
-
-```text
-HTTP Request
-     ↓
-   Route
-     ↓
-  Service
-     ↓
- Repository
-     ↓
-DynamoDB Local
-```
-
-O projeto utiliza uma separação simples de responsabilidades:
-
-- **Route**: recebe as requisições HTTP e retorna as respostas.
-- **Service**: concentra a lógica da aplicação.
-- **Repository**: responsável pelo acesso aos dados.
-- **DynamoDB**: responsável pela persistência das leituras.
-
-> **DynamoDB Local foi utilizado para desenvolvimento e testes, sem necessidade de utilizar recursos pagos da AWS.**
-
-## Próxima aula
-
-### Aula 7 → Tratamento de erros e validação
-
-- [ ] Tratamento de erros no acesso ao DynamoDB
-- [ ] Tratamento de erros na Route
-- [ ] Validação do parâmetro `limit`
-- [ ] Validação do lastKey
-- [ ] Uso básico de status HTTP
-- [ ] Testes automatizados
-- [ ] Validação manual com curl
-
-### Próximas etapas
-
-- [ ] Melhorar o modelo de consulta do DynamoDB.
-- [ ] Implementar tratamento de erros da API.
-- [ ] Adicionar validação das requisições.
-- [ ] Estudar AWS Lambda.
-- [ ] Integrar API Gateway.
-- [ ] Introduzir AWS CDK.
-- [ ] Adicionar processamento assíncrono.
-- [ ] Adicionar CI/CD.
-- [ ] Evoluir para uma arquitetura serverless.
-- [ ] Documentar a arquitetura final.
-
 ## API atual
 
 ### Health Check
@@ -302,20 +471,45 @@ Resposta:
 }
 ```
 
+Teste:
+
+```bash
+curl http://localhost:3000/health
+```
+
 ### Energy Readings
 
 **GET `/api/energy`**
 
 Retorna as leituras de consumo de energia armazenadas no DynamoDB.
 
-Com paginação:
+Exemplo:
+
+```bash
+curl http://localhost:3000/api/energy
+```
+
+A resposta contém as leituras retornadas e, quando houver mais resultados, uma chave para continuar a consulta.
+
+### Energy Readings com paginação
+
+**GET** `/api/energy?limit=2`
+
+Retorna até duas leituras.
 
 ```bash
 curl "http://localhost:3000/api/energy?limit=2"
 ```
 
-A resposta contém as leituras retornadas e, quando houver mais resultados, uma chave para continuar a consulta.
+Quando houver mais registros, a resposta conterá uma propriedade `lastKey`.
 
+Para buscar a próxima página, envie a chave retornada:
+
+```bash
+curl "http://localhost:3000/api/energy?limit=2&lastKey=CHAVE_RETORNADA"
+```
+
+O parâmetro limit aceita valores inteiros entre 1 e 100.
 
 ### Energy Readings por dispositivo
 
@@ -342,18 +536,37 @@ Resposta:
 
 ## Execução local
 
-Instale as dependências:
+### Instalar as dependências:
 
 ```bash
 npm install
 ```
-Compile o TypeScript:
+
+### Iniciar o DynamoDB Local
+
+```bash
+docker start dynamodb-local
+```
+
+### Criar a tabela
+
+```bash
+npx tsx src/config/create-table.ts
+```
+
+### Inserir os dados de exemplo
+
+```bash
+npx tsx src/config/insert-reading.ts
+```
+
+### Compilar o projeto:
 
 ```bash
 npm run build
 ```
 
-Inicie a aplicação:
+### Iniciar a aplicação:
 
 ```bash
 npm start
@@ -370,30 +583,6 @@ A API ficará disponível em:
 http://localhost:3000
 ```
 
-Para testar o health check:
-
-```bash
-curl http://localhost:3000/health
-```
-
-Para testar o endpoint de leituras de consumo de energia:
-
-```bash
-curl http://localhost:3000/api/energy
-```
-
-Para testar a paginação:
-
-```bash
-curl "http://localhost:3000/api/energy?limit=2"
-```
-
-Para consultar um dispositivo:
-
-```bash
-curl http://localhost:3000/api/energy/device-002
-```
-
 ### Scripts
 
 | Comando | Função |
@@ -401,3 +590,4 @@ curl http://localhost:3000/api/energy/device-002
 | `npm run build` | Compila o TypeScript para JavaScript |
 | `npm start` | Executa a aplicação compilada |
 | `npm run dev` | Executa a aplicação compilada com Node.js Watch |
+| `npm test` | Executa os testes automatizados |
