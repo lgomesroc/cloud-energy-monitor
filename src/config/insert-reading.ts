@@ -13,6 +13,16 @@ const readings: EnergyReading[] = [
     timestamp: "2026-08-15T12:10:00Z",
     consumptionKwh: 0.97,
   },
+  {
+    deviceId: "device-004",
+    timestamp: "2026-08-15T12:15:00Z",
+    consumptionKwh: 1.45,
+  },
+  {
+    deviceId: "device-005",
+    timestamp: "2026-08-15T12:20:00Z",
+    consumptionKwh: 3.12,
+  },
 ];
 
 for (const reading of readings) {

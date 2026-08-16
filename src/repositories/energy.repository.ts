@@ -17,7 +17,14 @@ export async function findAllEnergyReadings(
     ExclusiveStartKey: lastEvaluatedKey,
   });
 
-  const result = await dynamoDbDocumentClient.send(command);
+  let result;
+
+  try {
+    result = await dynamoDbDocumentClient.send(command);
+  } catch (error) {
+    console.error("Erro ao acessar o DynamoDB:", error);
+    throw error;
+  }
 
   const response: {
     readings: EnergyReading[];
