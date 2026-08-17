@@ -2,6 +2,41 @@
 
 Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless e serviços da AWS utilizando TypeScript.
 
+## Índice
+
+- [Objetivo](#objetivo)
+- [Tecnologias](#tecnologias)
+  - [Atualmente utilizadas](#atualmente-utilizadas)
+  - [Planejadas](#planejadas)
+- [Estrutura atual](#estrutura-atual)
+- [Arquitetura atual](#arquitetura-atual)
+- [Status](#status)
+  - [Aula 1 — Configuração inicial e criação da API](#aula-1---configuração-inicial-e-criação-da-api)
+  - [Aula 2 — Organização da aplicação e inicialização do servidor](#aula-2---organização-da-aplicação-e-inicialização-do-servidor)
+  - [Aula 3 — Domínio e primeiros endpoints de energia](#aula-3---domínio-e-primeiros-endpoints-de-energia)
+  - [Aula 4 — Separação da camada de serviço](#aula-4--separação-da-camada-de-serviço)
+  - [Aula 5 — Criação da camada de repositório](#aula-5--criação-da-camada-de-repositório)
+  - [Aula 6 — Testes, mocking e persistência com DynamoDB](#aula-6--testes-mocking-e-persistência-com-dynamodb)
+  - [Aula 7 — Validação, tratamento de erros e testes de integração HTTP](#aula-7--validação-tratamento-de-erros-e-testes-de-integração-http)
+  - [Aula 8 — AWS Lambda](#aula-8--aws-lambda)
+  - [Próxima aula](#próxima-aula)
+  - [Próximas etapas](#próximas-etapas)
+  - [Resumo das aulas](#resumo-das-aulas)
+- [Iniciando](#iniciando)
+  - [DynamoDB Local](#dynamodb-local)
+    - [Criar a tabela](#criar-a-tabela)
+    - [Inserir dados de exemplo](#inserir-dados-de-exemplo)
+  - [Testes](#testes)
+  - [Scan e Query](#scan-e-query)
+  - [Paginação](#paginação)
+- [API atual](#api-atual)
+  - [Health Check](#health-check)
+  - [Energy Readings](#energy-readings)
+  - [Energy Readings com paginação](#energy-readings-com-paginação)
+  - [Energy Readings por dispositivo](#energy-readings-por-dispositivo)
+- [Execução local](#execução-local)
+  - [Scripts](#scripts)
+
 ## Objetivo
 
 Construir uma aplicação capaz de registrar e consultar dados de consumo de energia, evoluindo gradualmente de uma aplicação local para uma arquitetura baseada em serviços AWS.
@@ -19,6 +54,7 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 - Supertest
 - AWS SDK for JavaScript
 - DynamoDB Local
+- AWS Lambda
 - Docker
 - Git
 - VS Code
@@ -26,8 +62,7 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 ### Planejadas
 
 - AWS CDK
-- AWS Lambda
-- API Gateway
+- - API Gateway
 - Amazon SQS
 - Amazon CloudWatch
 
@@ -47,6 +82,10 @@ cloud-energy-monitor/
 │   │   └── energy-readings.ts
 │   ├── domain/
 │   │   └── energy-reading.ts
+|   ├── handlers/
+│   │   ├── energy.handler.ts
+│   │   ├── energy.handler.test.ts
+│   │   └── test-handler.ts
 │   ├── repositories/
 │   │   ├── energy.repository.ts
 │   │   └── energy.repository.test.ts
@@ -69,6 +108,8 @@ cloud-energy-monitor/
 
 ## Arquitetura atual
 
+### Fase 1 — API tradicional
+
 ```text
 HTTP Request
      ↓
@@ -81,18 +122,57 @@ HTTP Request
 DynamoDB Local
 ```
 
+> A aplicação recebe a requisição HTTP diretamente pelo Express, passa pela Route, Service e Repository e chega ao DynamoDB Local.
+
+### Fase 2 — Introdução do Lambda
+
+```text
+HTTP Request
+     ↓
+Lambda Handler
+     ↓
+  Service
+     ↓
+ Repository
+     ↓
+DynamoDB Local
+```
+
+> o Handler passa a representar a entrada da aplicação no modelo serverless e ainda estamos executando tudo localmente.
+
+### Fase 3 — API Gateway + Lambda
+
+```text
+HTTP Request
+     ↓
+ API Gateway
+     ↓
+   Lambda
+     ↓
+  Service
+     ↓
+ Repository
+     ↓
+DynamoDB Local
+```
+
+> Começa a ter uma arquitetura mais próxima de uma aplicação serverless.
+
 O projeto utiliza uma separação simples de responsabilidades:
 
 - **Route**: recebe as requisições HTTP e retorna as respostas.
 - **Service**: concentra a lógica da aplicação.
 - **Repository**: responsável pelo acesso aos dados.
 - **DynamoDB**: responsável pela persistência das leituras.
+- **Lambda Handler**: recebe o evento enviado ao Lambda, interpreta os dados da requisição, chama o Service e transforma o resultado em uma resposta HTTP.
 
 > **DynamoDB Local foi utilizado para desenvolvimento e testes, sem necessidade de utilizar recursos pagos da AWS.**
 
+> **O Handler passa a atuar como uma alternativa à Route na arquitetura serverless, mantendo as camadas de Service e Repository separadas e reutilizáveis.**
+
 ## Status
 
-**Em desenvolvimento — Dia 7 concluído.**
+**Em desenvolvimento — Dia 8 concluído.**
 
 ### Aula 1 - Configuração inicial e criação da API
 
@@ -192,7 +272,7 @@ O projeto utiliza uma separação simples de responsabilidades:
 - [x] Exposição das consultas através da API REST.
 - [x] Validação dos endpoints utilizando `curl`.
 
-### Aula 7 → Validação, tratamento de erros e testes de integração HTTP
+### Aula 7 — Validação, tratamento de erros e testes de integração HTTP
 
 #### Validação
 - [x] Validação do parâmetro limit
@@ -224,43 +304,98 @@ O projeto utiliza uma separação simples de responsabilidades:
 - [x] Teste de erro na consulta por dispositivo
 - [x] Execução de todos os testes automatizados
 
+### Aula 8 — AWS Lambda
+
+- [x] Entendimento do conceito de AWS Lambda
+- [x] Entendimento do conceito de Lambda Handler
+- [x] Entendimento de como Lambda se encaixa na arquitetura do projeto
+- [x] Instalação de `@types/aws-lambda`
+- [x] Criação do Lambda Handler
+- [x] Recebimento de uma requisição pelo Handler
+- [x] Retorno de resposta HTTP pelo Handler
+- [x] Integração do Handler com o Service
+- [x] Manutenção do Repository e DynamoDB Local
+- [x] Execução do Lambda localmente
+- [x] Criação de testes automatizados para o Handler
+- [x] Teste de resposta HTTP 200
+- [x] Teste de parâmetro `limit` inválido
+- [x] Teste de `lastKey` inválido
+- [x] Teste de erro interno do Service
+- [x] Execução de todos os testes automatizados
+
 Atualmente:
 ```text
 Test Files  3 passed (3)
-Tests       14 passed (14)
+Tests       18 passed (18)
 ```
 
-## Próxima aula
+### Próxima aula
 
-### Aula 8 — AWS Lambda
-
-- [ ] Entender o que é AWS Lambda
-- [ ] Entender como Lambda se encaixa no projeto
-- [ ] Instalar o necessário para trabalhar com Lambda
-- [ ] Criar o primeiro Lambda Handler
-- [ ] Fazer o Handler receber uma requisição
-- [ ] Fazer o Handler retornar uma resposta HTTP
-- [ ] Integrar o Handler com o Service
-- [ ] Manter o Repository e DynamoDB Local
-- [ ] Executar o Lambda localmente
-- [ ] Criar testes automatizados para o Handler
-- [ ] Rodar todos os testes do projeto
+### Aula 9 — API Gateway + AWS Lambda
+- [ ] Entender o que é Amazon API Gateway
+- [ ] Entender o que é uma API HTTP
+- [ ] Entender como API Gateway se comunica com Lambda
+- [ ] Entender o conceito de evento HTTP recebido pelo Lambda
+- [ ] Entender `httpMethod`
+- [ ] Entender `path`
+- [ ] Entender `queryStringParameters`
+- [ ] Entender `pathParameters`
+- [ ] Adaptar o Handler para diferentes requisições HTTP
+- [ ] Implementar `GET /api/energy` através do Lambda
+- [ ] Implementar `GET /api/energy/:deviceId` através do Lambda
+- [ ] Trabalhar com o parâmetro `limit`
+- [ ] Trabalhar com o parâmetro `lastKey`
+- [ ] Trabalhar com `deviceId` através de `pathParameters`
+- [ ] Manter a integração Handler → Service → Repository → DynamoDB
+- [ ] Executar as requisições do Lambda localmente
+- [ ] Criar testes automatizados para as novas situações do Handler
+- [ ] Testar resposta HTTP 200
+- [ ] Testar parâmetros inválidos
+- [ ] Testar `deviceId`
+- [ ] Testar erro interno
+- [ ] Executar todos os testes do projeto
 - [ ] Atualizar a estrutura de pastas no README
 - [ ] Atualizar a documentação da arquitetura
+- [ ] Revisar o papel do Express na arquitetura atual
 
 ### Próximas etapas
 
+- [ ] Integrar API Gateway ao Lambda.
+- [ ] Adaptar o Handler para trabalhar com eventos HTTP.
+- [ ] Consolidar a arquitetura API Gateway → Lambda → Service → Repository → DynamoDB.
 - [ ] Revisar e melhorar a documentação da API.
 - [ ] Melhorar o modelo de consulta do DynamoDB.
-- [ ] Estudar AWS Lambda.
-- [ ] Integrar API Gateway.
 - [ ] Introduzir AWS CDK.
-- [ ] Adicionar processamento assíncrono.
-- [ ] Estudar Amazon SQS.
-- [ ] Estudar CloudWatch.
+- [ ] Gerenciar a infraestrutura utilizando Infrastructure as Code.
+- [ ] Estudar processamento assíncrono.
+- [ ] Introduzir Amazon SQS.
+- [ ] Estudar observabilidade com Amazon CloudWatch.
 - [ ] Adicionar CI/CD.
-- [ ] Evoluir gradualmente para uma arquitetura serverless.
+- [ ] Evoluir gradualmente a arquitetura serverless.
 - [ ] Documentar a arquitetura final.
+
+### Resumo das aulas
+
+- ✓ Aula 1 → Configuração inicial e criação da API
+- ✓ Aula 2 → Organização da aplicação e inicialização do servidor
+- ✓ Aula 3 → Domínio e primeiros endpoints de energia
+- ✓ Aula 4 → Separação da camada de serviço
+- ✓ Aula 5 → Criação da camada de repositório
+- ✓ Aula 6 → Testes, mocking e persistência com DynamoDB
+- ✓ Aula 7 → Validação, tratamento de erros e testes de integração HTTP
+- ✓ Aula 8 → AWS Lambda
+- Aula 9  → API Gateway + Lambda
+- Aula 10 → integração HTTP completa
+- Aula 11 → AWS CDK
+- Aula 12 → infraestrutura como código
+- Aula 13 → SQS
+- Aula 14 → processamento assíncrono
+- Aula 15 → CloudWatch
+- Aula 16 → observabilidade
+- Aula 17 → melhorias de arquitetura
+- Aula 18 → CI/CD
+- Aula 19 → revisão
+- Aula 20 → projeto final/documentação
 
 ## Iniciando
 
