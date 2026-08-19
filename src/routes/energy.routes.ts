@@ -64,7 +64,9 @@ energyRouter.get("/energy/:deviceId", async (request, response) => {
 
     const readings = await getEnergyReadingsByDevice(deviceId);
 
-    response.status(200).json(readings);
+    response.status(200).json({
+      readings,
+    });
   } catch (error) {
     console.error("Erro ao buscar leituras do dispositivo:", error);
 
