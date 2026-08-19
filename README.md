@@ -19,7 +19,8 @@ Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless
   - [Aula 6 — Testes, mocking e persistência com DynamoDB](#aula-6--testes-mocking-e-persistência-com-dynamodb)
   - [Aula 7 — Validação, tratamento de erros e testes de integração HTTP](#aula-7--validação-tratamento-de-erros-e-testes-de-integração-http)
   - [Aula 8 — AWS Lambda](#aula-8--aws-lambda)
-  - [Próxima aula](#próxima-aula)
+  - [Aula 9 — API Gateway + AWS Lambda](#aula-9--api-gateway--aws-lambda)
+- [Próxima aula](#próxima-aula)
   - [Próximas etapas](#próximas-etapas)
   - [Resumo das aulas](#resumo-das-aulas)
 - [Iniciando](#iniciando)
@@ -172,7 +173,7 @@ O projeto utiliza uma separação simples de responsabilidades:
 
 ## Status
 
-**Em desenvolvimento — Dia 8 concluído.**
+**Em desenvolvimento — Dia 9 concluído.**
 
 ### Aula 1 - Configuração inicial e criação da API
 
@@ -323,45 +324,63 @@ O projeto utiliza uma separação simples de responsabilidades:
 - [x] Teste de erro interno do Service
 - [x] Execução de todos os testes automatizados
 
+### Aula 9 — API Gateway + AWS Lambda
+
+- [x] Entendimento do conceito de Amazon API Gateway
+- [x] Entendimento do conceito de API HTTP
+- [x] Entendimento da comunicação entre API Gateway e AWS Lambda
+- [x] Entendimento do conceito de evento HTTP recebido pelo Lambda
+- [x] Trabalho com `queryStringParameters`
+- [x] Trabalho com `pathParameters`
+- [x] Adaptação do Lambda Handler para diferentes requisições HTTP
+- [x] Implementação de `GET /api/energy` através do Lambda Handler
+- [x] Implementação de `GET /api/energy/:deviceId` através do Lambda Handler
+- [x] Tratamento do parâmetro `limit`
+- [x] Tratamento do parâmetro `lastKey`
+- [x] Tratamento de `deviceId` através de `pathParameters`
+- [x] Manutenção da separação Handler → Service → Repository → DynamoDB
+- [x] Execução e validação do Lambda localmente
+- [x] Criação de testes automatizados para o Lambda Handler
+- [x] Teste de respostas HTTP 200
+- [x] Teste de parâmetros inválidos
+- [x] Teste de `deviceId`
+- [x] Teste de erros internos
+- [x] Execução de todos os testes automatizados
+- [x] Compilação do projeto com TypeScript
+- [x] Validação dos endpoints utilizando dados persistidos no DynamoDB Local
+
+> Nesta aula, o fluxo de API Gateway + Lambda foi estudado e reproduzido localmente. A integração com o Amazon API Gateway e demais recursos da AWS não foi provisionada em uma conta AWS real devido à limitação de recursos financeiros para assumir possíveis custos de infraestrutura.
+
+> O projeto continua utilizando o DynamoDB Local e execução local do Lambda para permitir o estudo da arquitetura serverless sem gerar custos na AWS.
+
 Atualmente:
 ```text
-Test Files  3 passed (3)
-Tests       18 passed (18)
+Test Files  4 passed (3)
+Tests       21 passed (18)
 ```
 
 ### Próxima aula
 
-### Aula 9 — API Gateway + AWS Lambda
-- [ ] Entender o que é Amazon API Gateway
-- [ ] Entender o que é uma API HTTP
-- [ ] Entender como API Gateway se comunica com Lambda
-- [ ] Entender o conceito de evento HTTP recebido pelo Lambda
-- [ ] Entender `httpMethod`
-- [ ] Entender `path`
-- [ ] Entender `queryStringParameters`
-- [ ] Entender `pathParameters`
-- [ ] Adaptar o Handler para diferentes requisições HTTP
-- [ ] Implementar `GET /api/energy` através do Lambda
-- [ ] Implementar `GET /api/energy/:deviceId` através do Lambda
-- [ ] Trabalhar com o parâmetro `limit`
-- [ ] Trabalhar com o parâmetro `lastKey`
-- [ ] Trabalhar com `deviceId` através de `pathParameters`
-- [ ] Manter a integração Handler → Service → Repository → DynamoDB
-- [ ] Executar as requisições do Lambda localmente
-- [ ] Criar testes automatizados para as novas situações do Handler
-- [ ] Testar resposta HTTP 200
-- [ ] Testar parâmetros inválidos
-- [ ] Testar `deviceId`
-- [ ] Testar erro interno
-- [ ] Executar todos os testes do projeto
-- [ ] Atualizar a estrutura de pastas no README
-- [ ] Atualizar a documentação da arquitetura
-- [ ] Revisar o papel do Express na arquitetura atual
+### Aula 10 — Configuração por ambiente e preparação para AWS
+
+- [ ] Entender configuração por ambiente
+- [ ] Identificar configurações específicas do ambiente local
+- [ ] Remover configurações fixas do código
+- [ ] Introduzir variáveis de ambiente
+- [ ] Configurar endpoint do DynamoDB por variável de ambiente
+- [ ] Configurar região AWS por variável de ambiente
+- [ ] Configurar credenciais apenas através do ambiente
+- [ ] Diferenciar ambiente local de ambiente AWS
+- [ ] Criar uma configuração adequada para desenvolvimento local
+- [ ] Revisar a configuração do `DynamoDBClient`
+- [ ] Evitar credenciais ou endpoints diretamente no código
+- [ ] Validar a aplicação após a alteração
+- [ ] Executar os testes automatizados
+- [ ] Compilar o projeto com TypeScript
+- [ ] Documentar as alterações no README
 
 ### Próximas etapas
 
-- [ ] Integrar API Gateway ao Lambda.
-- [ ] Adaptar o Handler para trabalhar com eventos HTTP.
 - [ ] Consolidar a arquitetura API Gateway → Lambda → Service → Repository → DynamoDB.
 - [ ] Revisar e melhorar a documentação da API.
 - [ ] Melhorar o modelo de consulta do DynamoDB.
@@ -384,8 +403,8 @@ Tests       18 passed (18)
 - ✓ Aula 6 → Testes, mocking e persistência com DynamoDB
 - ✓ Aula 7 → Validação, tratamento de erros e testes de integração HTTP
 - ✓ Aula 8 → AWS Lambda
-- Aula 9  → API Gateway + Lambda
-- Aula 10 → integração HTTP completa
+- ✓ Aula 9 → API Gateway + Lambda
+- Aula 10 → configuração por ambiente e preparação para AWS
 - Aula 11 → AWS CDK
 - Aula 12 → infraestrutura como código
 - Aula 13 → SQS
