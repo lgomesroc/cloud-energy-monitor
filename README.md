@@ -20,6 +20,7 @@ Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless
   - [Aula 7 — Validação, tratamento de erros e testes de integração HTTP](#aula-7--validação-tratamento-de-erros-e-testes-de-integração-http)
   - [Aula 8 — AWS Lambda](#aula-8--aws-lambda)
   - [Aula 9 — API Gateway + AWS Lambda](#aula-9--api-gateway--aws-lambda)
+  - [Aula 10 — Configuração por ambiente e preparação para AWS](#aula-10--configuração-por-ambiente-e-preparação-para-aws)
 - [Próxima aula](#próxima-aula)
   - [Próximas etapas](#próximas-etapas)
   - [Resumo das aulas](#resumo-das-aulas)
@@ -36,6 +37,7 @@ Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless
   - [Energy Readings com paginação](#energy-readings-com-paginação)
   - [Energy Readings por dispositivo](#energy-readings-por-dispositivo)
 - [Execução local](#execução-local)
+  - [Para desenvolvimento](#para-desenvolvimento)
   - [Scripts](#scripts)
 
 ## Objetivo
@@ -54,6 +56,7 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 - Vitest
 - Supertest
 - AWS SDK for JavaScript
+- API Gateway
 - DynamoDB Local
 - AWS Lambda
 - Docker
@@ -63,7 +66,6 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 ### Planejadas
 
 - AWS CDK
-- - API Gateway
 - Amazon SQS
 - Amazon CloudWatch
 
@@ -91,13 +93,14 @@ cloud-energy-monitor/
 │   │   ├── energy.repository.ts
 │   │   └── energy.repository.test.ts
 │   ├── routes/
-│   │   └── energy.routes.ts
+│   │   ├── energy.routes.ts
 │   │   └── energy.routes.test.ts
 │   ├── services/
 │   │   ├── energy.service.ts
 │   │   └── energy.service.test.ts
 │   ├── index.ts
 │   └── server.ts
+├── .env.example
 ├── .gitignore
 ├── README.md
 ├── package.json
@@ -173,9 +176,9 @@ O projeto utiliza uma separação simples de responsabilidades:
 
 ## Status
 
-**Em desenvolvimento — Dia 9 concluído.**
+**Em desenvolvimento — Dia 10 concluído.**
 
-### Aula 1 - Configuração inicial e criação da API
+**### Aula 1 - Configuração inicial e criação da API**
 
 - [x] Configuração do Node.js
 - [x] Configuração do TypeScript
@@ -194,7 +197,7 @@ O projeto utiliza uma separação simples de responsabilidades:
 - [x] Teste da API com curl
 - [x] Projeto compilando e executando localmente
 
-### Aula 2 - Organização da aplicação e inicialização do servidor
+**### Aula 2 - Organização da aplicação e inicialização do servidor**
 
 - [x] Separação entre configuração da aplicação e inicialização do servidor
 - [x] Criação do `src/server.ts`
@@ -207,7 +210,7 @@ O projeto utiliza uma separação simples de responsabilidades:
 - [x] Validação do endpoint `GET /health` com `curl`
 - [x] Commit das alterações
 
-### Aula 3 - Domínio e primeiros endpoints de energia
+**### Aula 3 - Domínio e primeiros endpoints de energia**
 
 - [x] Criação do domínio EnergyReading
 - [x] Definição dos dados de uma leitura de consumo
@@ -221,7 +224,7 @@ O projeto utiliza uma separação simples de responsabilidades:
 - [x] Commit das alterações
 - [x] Push das alterações para o GitHub
 
-### Aula 4 — Separação da camada de serviço
+**### Aula 4 — Separação da camada de serviço**
 
 - [x] Criada a pasta`src/services` para separar o acesso aos dados da camada de rotas.
 - [x] Criado `energy.service.ts` com a função `getEnergyReadings()`.
@@ -230,7 +233,7 @@ O projeto utiliza uma separação simples de responsabilidades:
 - [x] Executado `npm run build` com sucesso.
 - [x] Testado `GET /api/energy` com `curl`, retornando as leituras de energia esperadas.
 
-### Aula 5 — Criação da camada de repositório
+**### Aula 5 — Criação da camada de repositório**
 
 - [x] Criada a pasta `src/repositories`.
 - [x] Criado `energy.repository.ts` para centralizar o acesso aos dados de energia.
@@ -244,7 +247,7 @@ O projeto utiliza uma separação simples de responsabilidades:
 - [x] Validado `GET /health` com `curl`.
 - [x] Commit e push das alterações para o GitHub.
 
-### Aula 6 — Testes, mocking e persistência com DynamoDB
+**### Aula 6 — Testes, mocking e persistência com DynamoDB**
 
 #### Testes e mocking
 
@@ -273,7 +276,7 @@ O projeto utiliza uma separação simples de responsabilidades:
 - [x] Exposição das consultas através da API REST.
 - [x] Validação dos endpoints utilizando `curl`.
 
-### Aula 7 — Validação, tratamento de erros e testes de integração HTTP
+**### Aula 7 — Validação, tratamento de erros e testes de integração HTTP**
 
 #### Validação
 - [x] Validação do parâmetro limit
@@ -305,7 +308,7 @@ O projeto utiliza uma separação simples de responsabilidades:
 - [x] Teste de erro na consulta por dispositivo
 - [x] Execução de todos os testes automatizados
 
-### Aula 8 — AWS Lambda
+**### Aula 8 — AWS Lambda**
 
 - [x] Entendimento do conceito de AWS Lambda
 - [x] Entendimento do conceito de Lambda Handler
@@ -324,7 +327,7 @@ O projeto utiliza uma separação simples de responsabilidades:
 - [x] Teste de erro interno do Service
 - [x] Execução de todos os testes automatizados
 
-### Aula 9 — API Gateway + AWS Lambda
+**### Aula 9 — API Gateway + AWS Lambda**
 
 - [x] Entendimento do conceito de Amazon API Gateway
 - [x] Entendimento do conceito de API HTTP
@@ -356,40 +359,65 @@ O projeto utiliza uma separação simples de responsabilidades:
 Atualmente:
 ```text
 Test Files  4 passed (3)
-Tests       21 passed (18)
+Tests       21 passed (21)
 ```
+
+**### Aula 10 — Configuração por ambiente e preparação para AWS**
+
+- [x] Entendimento de configuração por ambiente
+- [x] Identificação das configurações específicas do ambiente local
+- [x] Remoção de configurações fixas do código
+- [x] Introdução de variáveis de ambiente
+- [x] Configuração do endpoint do DynamoDB por variável de ambiente
+- [x] Configuração da região AWS por variável de ambiente
+- [x] Configuração das credenciais através do ambiente
+- [x] Diferenciação entre ambiente local e ambiente AWS
+- [x] Criação de configuração adequada para desenvolvimento local
+- [x] Revisão da configuração do `DynamoDBClient`
+- [x] Remoção de credenciais e endpoints diretamente do código
+- [x] Criação do arquivo `.env.example`
+- [x] Configuração do `.env` para execução local
+- [x] Inclusão do `.env` no `.gitignore`
+- [x] Validação da aplicação após a alteração
+- [x] Execução dos testes automatizados
+- [x] Compilação do projeto com TypeScript
+- [x] Validação dos endpoints localmente
+- [x] Documentação das alterações no README
 
 ### Próxima aula
 
-### Aula 10 — Configuração por ambiente e preparação para AWS
+### Aula 11 — AWS CDK
 
-- [ ] Entender configuração por ambiente
-- [ ] Identificar configurações específicas do ambiente local
-- [ ] Remover configurações fixas do código
-- [ ] Introduzir variáveis de ambiente
-- [ ] Configurar endpoint do DynamoDB por variável de ambiente
-- [ ] Configurar região AWS por variável de ambiente
-- [ ] Configurar credenciais apenas através do ambiente
-- [ ] Diferenciar ambiente local de ambiente AWS
-- [ ] Criar uma configuração adequada para desenvolvimento local
-- [ ] Revisar a configuração do `DynamoDBClient`
-- [ ] Evitar credenciais ou endpoints diretamente no código
-- [ ] Validar a aplicação após a alteração
-- [ ] Executar os testes automatizados
-- [ ] Compilar o projeto com TypeScript
+- [ ] Entender o conceito de Infrastructure as Code (IaC)
+- [ ] Entender o papel do AWS CDK
+- [ ] Entender a diferença entre configuração da aplicação e infraestrutura
+- [ ] Instalar e configurar o AWS CDK
+- [ ] Verificar a versão do CDK
+- [ ] Inicializar um projeto CDK
+- [ ] Entender a estrutura de um projeto CDK
+- [ ] Entender o conceito de Stack
+- [ ] Entender o conceito de Construct
+- [ ] Criar a primeira Stack do projeto
+- [ ] Entender o processo de síntese do CDK
+- [ ] Executar `cdk synth`
+- [ ] Analisar o template CloudFormation gerado
+- [ ] Entender a relação entre AWS CDK e AWS CloudFormation
+- [ ] Preparar a infraestrutura do Cloud Energy Monitor para definição como código
+- [ ] Manter a aplicação executável localmente sem depender de recursos pagos da AWS
+- [ ] Validar a configuração do projeto
 - [ ] Documentar as alterações no README
 
 ### Próximas etapas
 
-- [ ] Consolidar a arquitetura API Gateway → Lambda → Service → Repository → DynamoDB.
-- [ ] Revisar e melhorar a documentação da API.
-- [ ] Melhorar o modelo de consulta do DynamoDB.
 - [ ] Introduzir AWS CDK.
 - [ ] Gerenciar a infraestrutura utilizando Infrastructure as Code.
+- [ ] Provisionar a infraestrutura serverless de forma controlada.
+- [ ] Estudar integração real entre API Gateway, Lambda e DynamoDB na AWS.
 - [ ] Estudar processamento assíncrono.
 - [ ] Introduzir Amazon SQS.
 - [ ] Estudar observabilidade com Amazon CloudWatch.
 - [ ] Adicionar CI/CD.
+- [ ] Melhorar a documentação da API.
 - [ ] Evoluir gradualmente a arquitetura serverless.
 - [ ] Documentar a arquitetura final.
 
@@ -404,7 +432,7 @@ Tests       21 passed (18)
 - ✓ Aula 7 → Validação, tratamento de erros e testes de integração HTTP
 - ✓ Aula 8 → AWS Lambda
 - ✓ Aula 9 → API Gateway + Lambda
-- Aula 10 → configuração por ambiente e preparação para AWS
+- ✓ Aula 10 → Configuração por ambiente e preparação para AWS
 - Aula 11 → AWS CDK
 - Aula 12 → infraestrutura como código
 - Aula 13 → SQS
@@ -420,9 +448,17 @@ Tests       21 passed (18)
 
 ### DynamoDB Local
 
-O projeto utiliza o DynamoDB Local para desenvolvimento e testes.
+O projeto utiliza o DynamoDB Local para desenvolvimento e testes, permitindo estudar a integração com o DynamoDB sem utilizar uma tabela real na AWS.
 
-O DynamoDB Local é executado através de um container Docker e permite trabalhar com a API do DynamoDB localmente, sem utilizar uma tabela real na AWS.
+#### Configuração do ambiente
+
+Crie o arquivo `.env` a partir do arquivo de exemplo:
+
+```bash
+cp .env.example .env
+```
+
+O arquivo .env contém as configurações utilizadas pelo ambiente local e não deve ser versionado pelo Git.
 
 #### Inicie o container:
 
@@ -726,7 +762,7 @@ npm run build
 npm start
 ```
 
-Para desenvolvimento:
+### Para desenvolvimento:
 ```bash
 npm run dev
 ```
