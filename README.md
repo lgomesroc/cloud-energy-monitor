@@ -21,7 +21,9 @@ Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless
   - [Aula 8 — AWS Lambda](#aula-8--aws-lambda)
   - [Aula 9 — API Gateway + AWS Lambda](#aula-9--api-gateway--aws-lambda)
   - [Aula 10 — Configuração por ambiente e preparação para AWS](#aula-10--configuração-por-ambiente-e-preparação-para-aws)
+  - [Aula 11 — AWS CDK e Infrastructure as Code](#aula-11--aws-cdk-e-infrastructure-as-code)
 - [Próxima aula](#próxima-aula)
+  - [Aula 12 — Modelagem da infraestrutura serverless com CDK](#aula-12--modelagem-da-infraestrutura-serverless-com-cdk)
   - [Próximas etapas](#próximas-etapas)
   - [Resumo das aulas](#resumo-das-aulas)
 - [Iniciando](#iniciando)
@@ -74,6 +76,19 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 ## Estrutura atual
 ```text
 cloud-energy-monitor/
+├── infra/
+│   ├── bin/
+│   │   └── infra.ts
+│   ├── lib/
+│   │   └── infra-stack.ts
+│   ├── test/
+│   │   └── infra.test.ts
+│   ├── cdk.json
+│   ├── jest.config.js
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── README.md
+│   └── tsconfig.json
 ├── src/
 │   ├── config/
 │   │   ├── dynamodb.ts
@@ -108,7 +123,9 @@ cloud-energy-monitor/
 └── tsconfig.json
 └── vitest.config.ts
 ```
-> Os diretórios node_modules/ e dist/ são gerados localmente e não são versionados pelo Git.
+> Os diretórios `node_modules/` e `dist/` são gerados localmente e não são versionados pelo Git.
+
+> A pasta `infra/` contém o projeto AWS CDK responsável pela definição da infraestrutura como código. A aplicação permanece separada da infraestrutura, permitindo estudar e evoluir cada parte de forma independente.
 
 ## Arquitetura atual
 
@@ -176,7 +193,7 @@ O projeto utiliza uma separação simples de responsabilidades:
 
 ## Status
 
-**Em desenvolvimento — Dia 10 concluído.**
+**Em desenvolvimento — Dia 11 concluído.**
 
 ### Aula 1 - Configuração inicial e criação da API
 
@@ -356,12 +373,6 @@ O projeto utiliza uma separação simples de responsabilidades:
 
 > O projeto continua utilizando o DynamoDB Local e execução local do Lambda para permitir o estudo da arquitetura serverless sem gerar custos na AWS.
 
-Atualmente:
-```text
-Test Files  4 passed (3)
-Tests       21 passed (21)
-```
-
 ### Aula 10 — Configuração por ambiente e preparação para AWS
 
 - [x] Entendimento de configuração por ambiente
@@ -384,32 +395,65 @@ Tests       21 passed (21)
 - [x] Validação dos endpoints localmente
 - [x] Documentação das alterações no README
 
+### Aula 11 — AWS CDK e Infrastructure as Code
+
+- [x] Entendimento do conceito de Infrastructure as Code (IaC)
+- [x] Entendimento do papel do AWS CDK
+- [x] Entendimento da diferença entre aplicação e infraestrutura
+- [x] Instalação e configuração do AWS CDK
+- [x] Verificação da versão do CDK
+- [x] Criação do projeto CDK dentro da pasta `infra/`
+- [x] Entendimento da estrutura de um projeto CDK
+- [x] Criação do arquivo `infra/bin/infra.ts`
+- [x] Criação da Stack `InfraStack`
+- [x] Criação do arquivo `infra/lib/infra-stack.ts`
+- [x] Criação da estrutura de testes da infraestrutura
+- [x] Entendimento do conceito de Stack
+- [x] Entendimento do conceito de Construct
+- [x] Entendimento do processo de síntese do CDK
+- [x] Execução do `cdk synth`
+- [x] Geração do template CloudFormation
+- [x] Análise dos arquivos gerados em `infra/cdk.out/`
+- [x] Entendimento da relação entre AWS CDK e AWS CloudFormation
+- [x] Separação entre código da aplicação e código da infraestrutura
+- [x] Manutenção da aplicação executável localmente
+- [x] Manutenção do DynamoDB Local para desenvolvimento e testes
+- [x] Validação da configuração do projeto
+- [x] Documentação das alterações no README
+
+> Nesta aula foi introduzido o AWS CDK como ferramenta de Infrastructure as Code. O CDK foi configurado em uma pasta separada (`infra/`), mantendo a infraestrutura desacoplada do código da aplicação.
+
+> O projeto continua sendo executado localmente. O `cdk deploy` não faz parte do fluxo atual, pois o objetivo é estudar a definição e síntese da infraestrutura sem provisionar recursos reais e sem gerar custos na AWS.
+
+> O DynamoDB utilizado durante o desenvolvimento continua sendo o DynamoDB Local executado através do Docker.
+
 ### Próxima aula
 
-### Aula 11 — AWS CDK
+### Aula 12 — Modelagem da infraestrutura serverless com CDK
 
-- [ ] Entender o conceito de Infrastructure as Code (IaC)
-- [ ] Entender o papel do AWS CDK
-- [ ] Entender a diferença entre configuração da aplicação e infraestrutura
-- [ ] Instalar e configurar o AWS CDK
-- [ ] Verificar a versão do CDK
-- [ ] Inicializar um projeto CDK
-- [ ] Entender a estrutura de um projeto CDK
-- [ ] Entender o conceito de Stack
-- [ ] Entender o conceito de Construct
-- [ ] Criar a primeira Stack do projeto
-- [ ] Entender o processo de síntese do CDK
+- [ ] Entender como representar recursos AWS utilizando Constructs
+- [ ] Entender a relação entre Stack e recursos da infraestrutura
+- [ ] Modelar a tabela DynamoDB `CloudEnergyReadings` utilizando CDK
+- [ ] Definir `deviceId` como Partition Key
+- [ ] Definir `timestamp` como Sort Key
+- [ ] Estudar as propriedades de uma tabela DynamoDB no CDK
+- [ ] Modelar a função Lambda utilizando CDK
+- [ ] Modelar a integração entre API Gateway e Lambda
+- [ ] Estudar as permissões necessárias entre os recursos
+- [ ] Relacionar API Gateway → Lambda → DynamoDB na infraestrutura
 - [ ] Executar `cdk synth`
 - [ ] Analisar o template CloudFormation gerado
-- [ ] Entender a relação entre AWS CDK e AWS CloudFormation
-- [ ] Preparar a infraestrutura do Cloud Energy Monitor para definição como código
-- [ ] Manter a aplicação executável localmente sem depender de recursos pagos da AWS
-- [ ] Validar a configuração do projeto
+- [ ] Validar a infraestrutura definida pelo CDK
+- [ ] Manter o DynamoDB Local para execução e testes da aplicação
+- [ ] Evitar provisionamento de recursos reais na AWS
 - [ ] Documentar as alterações no README
+
+> A Aula 12 continuará utilizando o AWS CDK apenas como Infrastructure as Code. A infraestrutura será definida e sintetizada localmente, sem execução de `cdk deploy` e sem utilização de recursos pagos da AWS.
 
 ### Próximas etapas
 
-- [ ] Introduzir AWS CDK.
+- [ ] Modelar a infraestrutura serverless utilizando AWS CDK.
+- [ ] Definir DynamoDB, Lambda e API Gateway como infraestrutura como código.
 - [ ] Gerenciar a infraestrutura utilizando Infrastructure as Code.
 - [ ] Provisionar a infraestrutura serverless de forma controlada.
 - [ ] Estudar integração real entre API Gateway, Lambda e DynamoDB na AWS.
@@ -433,7 +477,7 @@ Tests       21 passed (21)
 - ✓ Aula 8 → AWS Lambda
 - ✓ Aula 9 → API Gateway + Lambda
 - ✓ Aula 10 → Configuração por ambiente e preparação para AWS
-- Aula 11 → AWS CDK
+- ✓ Aula 11 → AWS CDK e Infrastructure as Code
 - Aula 12 → infraestrutura como código
 - Aula 13 → SQS
 - Aula 14 → processamento assíncrono
