@@ -22,8 +22,9 @@ Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless
   - [Aula 9 — API Gateway + AWS Lambda](#aula-9--api-gateway--aws-lambda)
   - [Aula 10 — Configuração por ambiente e preparação para AWS](#aula-10--configuração-por-ambiente-e-preparação-para-aws)
   - [Aula 11 — AWS CDK e Infrastructure as Code](#aula-11--aws-cdk-e-infrastructure-as-code)
-- [Próxima aula](#próxima-aula)
   - [Aula 12 — Modelagem da infraestrutura serverless com CDK](#aula-12--modelagem-da-infraestrutura-serverless-com-cdk)
+- [Próxima aula](#próxima-aula)
+  - [Aula 13 — Processamento assíncrono com Amazon SQS](#aula-13--processamento-assíncrono-com-amazon-sqs)
   - [Próximas etapas](#próximas-etapas)
   - [Resumo das aulas](#resumo-das-aulas)
 - [Iniciando](#iniciando)
@@ -52,24 +53,28 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 
 ### Atualmente utilizadas
 
-- Node.js 24.19.0
-- TypeScript 7.0.2
-- Express 5.2.1
-- Vitest
-- Supertest
-- AWS SDK for JavaScript
-- API Gateway
-- DynamoDB Local
-- AWS Lambda
-- Docker
-- Git
-- VS Code
+### Atualmente utilizadas
+
+- **Node.js 24.19.0** — ambiente de execução utilizado para a aplicação e para os recursos em TypeScript.
+- **TypeScript 7.0.2** — linguagem utilizada no desenvolvimento da aplicação, dos Lambda Handlers e da infraestrutura com AWS CDK.
+- **Express 5.2.1** — framework HTTP utilizado na primeira fase da aplicação, permitindo desenvolver e testar a API localmente.
+- **Vitest** — framework utilizado para os testes automatizados das camadas da aplicação.
+- **Supertest** — utilizado para testar as rotas HTTP da aplicação.
+- **AWS SDK for JavaScript** — utilizado para comunicação da aplicação com o DynamoDB.
+- **AWS API Gateway** — utilizado na infraestrutura serverless para disponibilizar os endpoints HTTP e encaminhar as requisições para o Lambda.
+- **DynamoDB Local** — utilizado como banco de dados local durante o desenvolvimento e os testes, evitando a necessidade de utilizar uma tabela DynamoDB real na AWS.
+- **AWS Lambda** — utilizado como função serverless responsável por receber os eventos HTTP e executar a lógica da aplicação.
+- **AWS IAM** — utilizado para definir as permissões necessárias para que a função Lambda possa acessar o DynamoDB e executar seus recursos.
+- **AWS CloudFormation** — utilizado como camada de infraestrutura gerada pelo AWS CDK. O `cdk synth` gera um template CloudFormation que representa os recursos definidos na Stack.
+- **Amazon CloudWatch Logs** — utilizado para registrar os logs de execução da função Lambda. O Log Group da Lambda é criado na infraestrutura gerada pelo CDK.
+- **AWS CDK** — utilizado para definir a infraestrutura AWS como código, permitindo modelar DynamoDB, Lambda, API Gateway, IAM e recursos relacionados utilizando TypeScript.
+- **Docker** — utilizado para executar o DynamoDB Local em um container.
+- **Git** — utilizado para controle de versão do projeto.
+- **VS Code** — editor utilizado no desenvolvimento da aplicação.
 
 ### Planejadas
 
-- AWS CDK
 - Amazon SQS
-- Amazon CloudWatch
 
 > Os serviços AWS listados como planejados ainda não fazem parte da implementação atual.
 
@@ -427,38 +432,64 @@ O projeto utiliza uma separação simples de responsabilidades:
 
 > O DynamoDB utilizado durante o desenvolvimento continua sendo o DynamoDB Local executado através do Docker.
 
-### Próxima aula
-
 ### Aula 12 — Modelagem da infraestrutura serverless com CDK
 
-- [ ] Entender como representar recursos AWS utilizando Constructs
-- [ ] Entender a relação entre Stack e recursos da infraestrutura
-- [ ] Modelar a tabela DynamoDB `CloudEnergyReadings` utilizando CDK
-- [ ] Definir `deviceId` como Partition Key
-- [ ] Definir `timestamp` como Sort Key
-- [ ] Estudar as propriedades de uma tabela DynamoDB no CDK
-- [ ] Modelar a função Lambda utilizando CDK
-- [ ] Modelar a integração entre API Gateway e Lambda
-- [ ] Estudar as permissões necessárias entre os recursos
-- [ ] Relacionar API Gateway → Lambda → DynamoDB na infraestrutura
-- [ ] Executar `cdk synth`
-- [ ] Analisar o template CloudFormation gerado
-- [ ] Validar a infraestrutura definida pelo CDK
-- [ ] Manter o DynamoDB Local para execução e testes da aplicação
-- [ ] Evitar provisionamento de recursos reais na AWS
-- [ ] Documentar as alterações no README
+- [x] Entendimento de como representar recursos AWS utilizando Constructs.
+- [x] Entendimento da relação entre Stack e recursos da infraestrutura.
+- [x] Modelagem da tabela DynamoDB `CloudEnergyReadings` utilizando CDK.
+- [x] Definição de `deviceId` como Partition Key.
+- [x] Definição de `timestamp` como Sort Key.
+- [x] Configuração da tabela DynamoDB com `PAY_PER_REQUEST`.
+- [x] Modelagem da função AWS Lambda utilizando CDK.
+- [x] Configuração do runtime Node.js 24.x para a Lambda.
+- [x] Configuração do Lambda Handler `handlers/energy.handler`.
+- [x] Criação das permissões IAM necessárias para a Lambda consultar o DynamoDB.
+- [x] Modelagem da integração entre API Gateway e Lambda.
+- [x] Criação da API `CloudEnergyApi`.
+- [x] Configuração dos endpoints `GET /api/energy` e `GET /api/energy/{deviceId}`.
+- [x] Configuração das permissões para que o API Gateway invoque a Lambda.
+- [x] Criação do Log Group da Lambda no Amazon CloudWatch Logs.
+- [x] Entendimento da geração de recursos AWS pelo AWS CDK.
+- [x] Execução do `cdk synth`.
+- [x] Análise do template CloudFormation gerado pelo CDK.
+- [x] Identificação dos recursos DynamoDB, Lambda, IAM, API Gateway e CloudWatch Logs no template.
+- [x] Validação da infraestrutura definida pelo CDK.
+- [x] Manutenção do DynamoDB Local para execução e testes da aplicação.
+- [x] Manutenção da aplicação executável localmente.
+- [x] Documentação das alterações no README.
 
-> A Aula 12 continuará utilizando o AWS CDK apenas como Infrastructure as Code. A infraestrutura será definida e sintetizada localmente, sem execução de `cdk deploy` e sem utilização de recursos pagos da AWS.
+> Nesta aula, a infraestrutura serverless foi efetivamente modelada utilizando AWS CDK. A Stack passou a representar a tabela DynamoDB, a função Lambda, as permissões IAM, o API Gateway e o Log Group utilizado pelo Amazon CloudWatch Logs.
+
+> O `cdk synth` foi utilizado para transformar a definição feita em TypeScript em um template AWS CloudFormation. O template gerado em `infra/cdk.out/InfraStack.template.json` foi analisado para verificar os recursos que seriam criados pela infraestrutura.
+
+> A infraestrutura continua sendo apenas sintetizada localmente. O `cdk deploy` não foi executado e os recursos reais da AWS não foram provisionados.
+
+## Próxima aula
+
+### Aula 13 — Processamento assíncrono com Amazon SQS
+
+- [ ] Entender o conceito de processamento assíncrono.
+- [ ] Entender o funcionamento do Amazon SQS.
+- [ ] Entender a diferença entre processamento síncrono e assíncrono.
+- [ ] Entender o conceito de fila de mensagens.
+- [ ] Modelar uma fila SQS utilizando AWS CDK.
+- [ ] Estudar o envio de mensagens para uma fila.
+- [ ] Estudar o consumo de mensagens por uma aplicação.
+- [ ] Entender a integração entre SQS e AWS Lambda.
+- [ ] Relacionar API Gateway → Lambda → SQS.
+- [ ] Executar `cdk synth`.
+- [ ] Analisar o template CloudFormation gerado.
+- [ ] Manter o desenvolvimento sem provisionar recursos pagos na AWS.
+- [ ] Documentar as alterações no README.
+
+> A Aula 13 introduzirá o processamento assíncrono utilizando Amazon SQS. A fila será modelada utilizando AWS CDK, mantendo o projeto dentro da abordagem de Infrastructure as Code e sem necessidade de provisionar recursos reais na AWS.
 
 ### Próximas etapas
 
-- [ ] Modelar a infraestrutura serverless utilizando AWS CDK.
-- [ ] Definir DynamoDB, Lambda e API Gateway como infraestrutura como código.
-- [ ] Gerenciar a infraestrutura utilizando Infrastructure as Code.
-- [ ] Provisionar a infraestrutura serverless de forma controlada.
-- [ ] Estudar integração real entre API Gateway, Lambda e DynamoDB na AWS.
 - [ ] Estudar processamento assíncrono.
 - [ ] Introduzir Amazon SQS.
+- [ ] Modelar uma fila SQS utilizando AWS CDK.
+- [ ] Estudar integração entre Amazon SQS e AWS Lambda.
 - [ ] Estudar observabilidade com Amazon CloudWatch.
 - [ ] Adicionar CI/CD.
 - [ ] Melhorar a documentação da API.
@@ -478,15 +509,15 @@ O projeto utiliza uma separação simples de responsabilidades:
 - ✓ Aula 9 → API Gateway + Lambda
 - ✓ Aula 10 → Configuração por ambiente e preparação para AWS
 - ✓ Aula 11 → AWS CDK e Infrastructure as Code
-- Aula 12 → infraestrutura como código
-- Aula 13 → SQS
-- Aula 14 → processamento assíncrono
-- Aula 15 → CloudWatch
-- Aula 16 → observabilidade
-- Aula 17 → melhorias de arquitetura
-- Aula 18 → CI/CD
-- Aula 19 → revisão
-- Aula 20 → projeto final/documentação
+- ✓ Aula 12 → Modelagem da infraestrutura serverless com CDK
+- Aula 13 → Processamento assíncrono com Amazon SQS
+- Aula 14 → Integração entre SQS e Lambda
+- Aula 15 → Observabilidade com Amazon CloudWatch
+- Aula 16 → Melhorias de arquitetura
+- Aula 17 → CI/CD
+- Aula 18 → Revisão da infraestrutura e aplicação
+- Aula 19 → Testes e documentação
+- Aula 20 → Projeto final
 
 ## Iniciando
 
