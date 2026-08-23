@@ -53,8 +53,6 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 
 ### Atualmente utilizadas
 
-### Atualmente utilizadas
-
 - **Node.js 24.19.0** — ambiente de execução utilizado para a aplicação e para os recursos em TypeScript.
 - **TypeScript 7.0.2** — linguagem utilizada no desenvolvimento da aplicação, dos Lambda Handlers e da infraestrutura com AWS CDK.
 - **Express 5.2.1** — framework HTTP utilizado na primeira fase da aplicação, permitindo desenvolver e testar a API localmente.
@@ -198,7 +196,7 @@ O projeto utiliza uma separação simples de responsabilidades:
 
 ## Status
 
-**Em desenvolvimento — Dia 11 concluído.**
+**Em desenvolvimento — Dia 12 concluído.**
 
 ### Aula 1 - Configuração inicial e criação da API
 
