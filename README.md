@@ -256,27 +256,6 @@ A fila SQS utiliza:
 - Retenção de mensagens por 4 dias
 
 A infraestrutura pode ser sintetizada utilizando:
-A infraestrutura do projeto é definida utilizando AWS CDK.
-
-Os componentes definidos são:
-
-DynamoDB
-Amazon SQS
-AWS Lambda
-Amazon API Gateway
-
-A tabela DynamoDB utiliza:
-
-deviceId como chave de partição
-timestamp como chave de ordenação numérica
-PAY_PER_REQUEST como modo de cobrança
-
-A fila SQS utiliza:
-
-Visibility Timeout de 30 segundos
-Retenção de mensagens por 4 dias
-
-A infraestrutura pode ser sintetizada utilizando:
 
 ```bash
 cd infra
