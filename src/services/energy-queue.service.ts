@@ -4,8 +4,6 @@ const sqsClient = new SQSClient({
   region: process.env.AWS_REGION ?? "us-east-1",
 });
 
-const queueUrl = process.env.QUEUE_URL;
-
 export interface EnergyMessage {
   deviceId: string;
   timestamp: number;
@@ -15,6 +13,8 @@ export interface EnergyMessage {
 export async function sendEnergyMessage(
   message: EnergyMessage,
 ): Promise<void> {
+  const queueUrl = process.env.QUEUE_URL;
+
   if (!queueUrl) {
     throw new Error("QUEUE_URL não configurada.");
   }
