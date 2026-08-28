@@ -21,7 +21,7 @@ Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless
   - [Aula 10 — Configuração por ambiente e preparação para AWS](#aula-10--configuração-por-ambiente-e-preparação-para-aws)
   - [Aula 11 — AWS CDK e Infrastructure as Code](#aula-11--aws-cdk-e-infrastructure-as-code)
   - [Aula 12 — Modelagem da infraestrutura serverless com CDK](#aula-12--modelagem-da-infraestrutura-serverless-com-cdk)
-    - [Aula 13 — Processamento assíncrono com Amazon SQS](#aula-13--processamento-assíncrono-com-amazon-sqs)
+  - [Aula 13 — Processamento assíncrono com Amazon SQS](#aula-13--processamento-assíncrono-com-amazon-sqs)
 - [Próxima aula](#próxima-aula)
   - [Aula 14 — Integração e testes do fluxo assíncrono](#aula-14--integração-e-testes-do-fluxo-assíncrono)
   - [Próximas etapas](#próximas-etapas)
