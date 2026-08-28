@@ -26,7 +26,11 @@ Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless
   - [Aula 15 — Observabilidade com Amazon CloudWatch](#aula-15--observabilidade-com-amazon-cloudwatch)
 - [Próxima aula](#próxima-aula)
   - [Próximas etapas](#próximas-etapas)
-  - [Aula 16 — Melhorias de arquitetura](#aula-16--melhorias-de-arquitetura)
+  - [Aula 16 — CI/CD com GitHub Actions](#aula-16--cicd-com-github-actions)
+  - [Aula 17 — Introdução ao Frontend](#aula-17--introdução-ao-frontend)
+  - [Aula 18 — Integração Frontend + Backend](#aula-18--integração-frontend--backend)
+  - [Aula 19 — Publicação e preparação para portfólio](#aula-19--publicação-e-preparação-para-portfólio)
+  - [Aula 20 — Revisão final e projeto](#aula-20--revisão-final-e-projeto)
   - [Resumo das aulas](#resumo-das-aulas)
 - [Iniciando](#iniciando)
   - [DynamoDB Local](#dynamodb-local)
@@ -674,23 +678,75 @@ npm test
 
 ## Próxima aula
 
-### Aula 16 — Melhorias de arquitetura
+### Aula 16 — CI/CD com GitHub Actions
 
-- [ ] Revisar a arquitetura atual da aplicação.
-- [ ] Revisar a separação entre Handler, Service e Repository.
-- [ ] Avaliar responsabilidades atuais dos componentes.
-- [ ] Identificar possíveis duplicações ou responsabilidades desnecessárias.
-- [ ] Avaliar se alguma melhoria de organização realmente agrega valor ao projeto.
-- [ ] Revisar o fluxo API Gateway → Lambda Producer → SQS → Lambda Consumer.
-- [ ] Avaliar o tratamento de erros no fluxo assíncrono.
-- [ ] Avaliar a responsabilidade do Consumer no processamento das mensagens.
-- [ ] Revisar a organização dos arquivos e módulos.
-- [ ] Evitar introdução de tecnologias ou camadas sem necessidade.
-- [ ] Executar `npx tsc --noEmit`.
-- [ ] Executar `npm run build`.
-- [ ] Executar `npm test`.
-- [ ] Garantir que todos os testes continuem passando.
-- [ ] Documentar as melhorias realizadas no README.
+- [ ] Entender o conceito de CI/CD
+- [ ] Entender o papel do GitHub Actions
+- [ ] Criar um workflow de CI
+- [ ] Executar instalação das dependências
+- [ ] Executar npx tsc --noEmit
+- [ ] Executar npm test
+- [ ] Executar npm run build
+- [ ] Configurar execução automática no push
+- [ ] Configurar execução em Pull Request
+- [ ] Validar o pipeline
+- [ ] Documentar o CI/CD no README
+
+### Aula 17 — Introdução ao Frontend
+
+- [ ] Definir a estrutura do frontend
+- [ ] Criar a interface inicial do Cloud Energy Monitor
+- [ ] Utilizar HTML
+- [ ] Utilizar CSS
+- [ ] Utilizar TypeScript/JavaScript
+- [ ] Criar a tela de visualização das leituras
+- [ ] Criar componentes simples de interface
+- [ ] Preparar o frontend para consumir a API
+- [ ] Manter a solução simples, sem framework desnecessário
+
+### Aula 18 — Integração Frontend + Backend
+
+- [ ] Conectar o frontend à API
+- [ ] Consumir GET /api/energy
+- [ ] Consultar leituras por dispositivo
+- [ ] Implementar paginação
+- [ ] Enviar novas leituras através de POST /api/energy
+- [ ] Trabalhar com estados de carregamento
+- [ ] Trabalhar com mensagens de erro
+- [ ] Validar a comunicação entre frontend e backend
+- [ ] Testar o fluxo completo da aplicação
+
+### Aula 19 — Publicação e preparação para portfólio
+
+- [ ] Revisar a estrutura final do projeto
+- [ ] Revisar frontend e backend
+- [ ] Revisar README
+- [ ] Revisar documentação da arquitetura
+- [ ] Preparar o frontend para publicação
+- [ ] Estudar uma opção de hospedagem gratuita
+- [ ] Publicar o frontend, se viável sem custos
+- [ ] Revisar configuração de ambiente
+- [ ] Revisar informações apresentadas ao usuário
+- [ ] Preparar o projeto para apresentação em processos seletivos
+
+### Aula 20 — Revisão final e projeto
+
+- [ ] Revisão geral da arquitetura
+- [ ] Revisão do fluxo síncrono
+- [ ] Revisão do fluxo assíncrono
+- [ ] Revisão de Lambda
+- [ ] Revisão de API Gateway
+- [ ] Revisão de SQS
+- [ ] Revisão de DynamoDB
+- [ ] Revisão de CloudWatch
+- [ ] Revisão de AWS CDK
+- [ ] Revisão de CI/CD
+- [ ] Revisão do frontend
+- [ ] Execução de todos os testes
+- [ ] Execução do build
+- [ ] Revisão final do README
+- [ ] Revisão da estrutura do repositório
+- [ ] Preparação do projeto para portfólio
 
 ### Próximas etapas
 
@@ -748,11 +804,11 @@ npm test
 - ✓ Aula 13 → Processamento assíncrono com Amazon SQS
 - ✓ Aula 14 → Integração entre SQS e Lambda
 - ✓ Aula 15 → Observabilidade com Amazon CloudWatch
-- Aula 16 → Melhorias de arquitetura
-- Aula 17 → CI/CD
-- Aula 18 → Revisão da infraestrutura e aplicação
-- Aula 19 → Testes e documentação
-- Aula 20 → Projeto final
+- Aula 16 → CI/CD com GitHub Actions
+- Aula 17 → Introdução ao Frontend
+- Aula 18 → Integração Frontend + Backend
+- Aula 19 → Publicação e preparação para portfólio
+- Aula 20 → Revisão final e projeto
 
 ## Iniciando
 
