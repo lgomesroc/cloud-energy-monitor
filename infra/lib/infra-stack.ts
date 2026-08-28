@@ -5,6 +5,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources';
+import * as logs from 'aws-cdk-lib/aws-logs';
 
 export class InfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -30,10 +31,41 @@ export class InfraStack extends cdk.Stack {
       retentionPeriod: cdk.Duration.days(4),
     });
 
+    const energyLambdaLogGroup = new logs.LogGroup(
+      this,
+      'EnergyLambdaLogGroup',
+      {
+        logGroupName: '/aws/lambda/cloud-energy-monitor-energy',
+        retention: logs.RetentionDays.ONE_WEEK,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+      },
+    );
+
+    const energyProducerLambdaLogGroup = new logs.LogGroup(
+      this,
+      'EnergyProducerLambdaLogGroup',
+      {
+        logGroupName: '/aws/lambda/cloud-energy-monitor-producer',
+        retention: logs.RetentionDays.ONE_WEEK,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+      },
+    );
+
+    const energyConsumerLambdaLogGroup = new logs.LogGroup(
+      this,
+      'EnergyConsumerLambdaLogGroup',
+      {
+        logGroupName: '/aws/lambda/cloud-energy-monitor-consumer',
+        retention: logs.RetentionDays.ONE_WEEK,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+      },
+    );
+
     const energyLambda = new lambda.Function(this, 'EnergyLambda', {
       runtime: lambda.Runtime.NODEJS_24_X,
       handler: 'handlers/energy.handler',
       code: lambda.Code.fromAsset('../dist'),
+      logGroup: energyLambdaLogGroup,
     });
 
     table.grantReadData(energyLambda);
@@ -48,6 +80,7 @@ export class InfraStack extends cdk.Stack {
         environment: {
           QUEUE_URL: energyQueue.queueUrl,
         },
+        logGroup: energyProducerLambdaLogGroup,
       },
     );
 
@@ -60,6 +93,7 @@ export class InfraStack extends cdk.Stack {
         runtime: lambda.Runtime.NODEJS_24_X,
         handler: 'handlers/energy-consumer.handler',
         code: lambda.Code.fromAsset('../dist'),
+        logGroup: energyConsumerLambdaLogGroup,
       },
     );
 
