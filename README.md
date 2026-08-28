@@ -23,9 +23,10 @@ Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless
   - [Aula 12 — Modelagem da infraestrutura serverless com CDK](#aula-12--modelagem-da-infraestrutura-serverless-com-cdk)
   - [Aula 13 — Processamento assíncrono com Amazon SQS](#aula-13--processamento-assíncrono-com-amazon-sqs)
   - [Aula 14 — Integração e testes do fluxo assíncrono](#aula-14--integração-e-testes-do-fluxo-assíncrono)
-- [Próxima aula](#próxima-aula)
   - [Aula 15 — Observabilidade com Amazon CloudWatch](#aula-15--observabilidade-com-amazon-cloudwatch)
+- [Próxima aula](#próxima-aula)
   - [Próximas etapas](#próximas-etapas)
+  - [Aula 16 — Melhorias de arquitetura](#aula-16--melhorias-de-arquitetura)
   - [Resumo das aulas](#resumo-das-aulas)
 - [Iniciando](#iniciando)
   - [DynamoDB Local](#dynamodb-local)
@@ -129,6 +130,41 @@ cloud-energy-monitor/
 > Os diretórios `node_modules/` e `dist/` são gerados localmente e não são versionados pelo Git.
 
 > A pasta `infra/` contém o projeto AWS CDK responsável pela definição da infraestrutura como código. A aplicação permanece separada da infraestrutura, permitindo estudar e evoluir cada parte de forma independente.
+
+## Desenho completo do projeto
+
+                    CLIENTE
+                       │
+                       ▼
+                ┌─────────────┐
+                │ API Gateway │
+                └──────┬──────┘
+                       │
+             ┌─────────┴─────────┐
+             │                   │
+          GET                  POST
+             │                   │
+             ▼                   ▼
+     ┌──────────────┐    ┌────────────────┐
+     │ Energy Lambda│    │Producer Lambda │
+     └──────┬───────┘    └───────┬────────┘
+            │                     │
+            │                     │ SendMessage
+            ▼                     ▼
+      ┌─────────────┐       ┌─────────┐
+      │  DynamoDB   │       │   SQS   │
+      └─────────────┘       └────┬────┘
+                                  │
+                                  │ Event Source
+                                  ▼
+                         ┌────────────────┐
+                         │Consumer Lambda │
+                         └───────┬────────┘
+                                 │
+                                 ▼
+                           ┌─────────────┐
+                           │  DynamoDB   │
+                           └─────────────┘
 
 ## Arquitetura atual
 
@@ -272,8 +308,9 @@ Os testes automatizados são executados com Vitest.
 
 Atualmente o projeto possui:
 
-- 22 testes
-- 5 arquivos de teste
+- Testes automatizados distribuídos entre as camadas da aplicação e o fluxo assíncrono
+- Testes unitários para Service, Repository, Routes e Lambda Handlers
+- Testes do fluxo Producer → SQS → Consumer
 - Todos os testes passando
 
 Para executar:
@@ -284,7 +321,7 @@ npm test
 
 ## Status
 
-**Em desenvolvimento — Aula 13 concluído.**
+**Em desenvolvimento — Aula 15 concluído.**
 
 ### Aula 1 - Configuração inicial e criação da API
 
@@ -600,33 +637,60 @@ npm test
 
 > O fluxo continua sendo estudado e validado localmente, sem provisionamento de recursos pagos na AWS.
 
-## Próxima aula
-
-## Próxima aula
-
 ### Aula 15 — Observabilidade com Amazon CloudWatch
 
-- [ ] Entender o conceito de observabilidade em aplicações.
-- [ ] Entender o papel do Amazon CloudWatch.
-- [ ] Entender o funcionamento dos logs de execução do AWS Lambda.
-- [ ] Entender o conceito de Log Group e Log Stream.
-- [ ] Adicionar logs relevantes ao Lambda Producer.
-- [ ] Adicionar logs relevantes ao Lambda Consumer.
-- [ ] Registrar informações importantes durante o processamento das mensagens.
-- [ ] Registrar erros durante o processamento.
-- [ ] Evitar exposição de informações sensíveis nos logs.
-- [ ] Modelar o Log Group utilizando AWS CDK.
-- [ ] Revisar a configuração de retenção dos logs.
-- [ ] Executar `cdk synth`.
-- [ ] Analisar os recursos de CloudWatch Logs gerados pelo CDK.
+- [x] Entendimento do conceito de observabilidade em aplicações.
+- [x] Entendimento do papel do Amazon CloudWatch.
+- [x] Entendimento do funcionamento dos logs de execução do AWS Lambda.
+- [x] Entendimento do conceito de Log Group e Log Stream.
+- [x] Adição de logs relevantes ao Lambda Producer.
+- [x] Adição de logs relevantes ao Lambda Consumer.
+- [x] Registro de informações importantes durante o processamento das mensagens.
+- [x] Registro de erros durante o processamento.
+- [x] Validação das mensagens recebidas pelo Consumer.
+- [x] Validação do `deviceId` recebido nas mensagens.
+- [x] Tratamento de mensagens inválidas no Consumer.
+- [x] Tratamento de erros durante o processamento das mensagens.
+- [x] Modelagem dos Log Groups utilizando AWS CDK.
+- [x] Configuração de retenção dos logs.
+- [x] Configuração de Log Groups para as funções Energy, Producer e Consumer.
+- [x] Execução de `cdk synth`.
+- [x] Análise dos recursos de CloudWatch Logs gerados pelo CDK.
+- [x] Execução de `npx tsc --noEmit`.
+- [x] Execução de `npm run build`.
+- [x] Execução de `npm test`.
+- [x] Validação da compilação sem erros de TypeScript.
+- [x] Validação dos testes automatizados.
+- [x] Documentação da utilização do CloudWatch no README.
+- [x] Manutenção do desenvolvimento local sem provisionar recursos pagos na AWS.
+
+> Nesta aula foi estudada a observabilidade da aplicação utilizando Amazon CloudWatch, com foco nos logs das funções Lambda e no acompanhamento do processamento assíncrono.
+
+> Foram adicionados logs ao Producer e ao Consumer para acompanhar as principais etapas do processamento, incluindo o recebimento, a validação e o processamento das mensagens, além do registro de erros.
+
+> Os Log Groups das funções Lambda foram definidos utilizando AWS CDK, incluindo configuração de retenção dos logs.
+
+> O projeto continua sendo executado localmente e a infraestrutura continua sendo apenas sintetizada com `cdk synth`, sem provisionamento de recursos reais na AWS.
+
+## Próxima aula
+
+### Aula 16 — Melhorias de arquitetura
+
+- [ ] Revisar a arquitetura atual da aplicação.
+- [ ] Revisar a separação entre Handler, Service e Repository.
+- [ ] Avaliar responsabilidades atuais dos componentes.
+- [ ] Identificar possíveis duplicações ou responsabilidades desnecessárias.
+- [ ] Avaliar se alguma melhoria de organização realmente agrega valor ao projeto.
+- [ ] Revisar o fluxo API Gateway → Lambda Producer → SQS → Lambda Consumer.
+- [ ] Avaliar o tratamento de erros no fluxo assíncrono.
+- [ ] Avaliar a responsabilidade do Consumer no processamento das mensagens.
+- [ ] Revisar a organização dos arquivos e módulos.
+- [ ] Evitar introdução de tecnologias ou camadas sem necessidade.
 - [ ] Executar `npx tsc --noEmit`.
 - [ ] Executar `npm run build`.
 - [ ] Executar `npm test`.
 - [ ] Garantir que todos os testes continuem passando.
-- [ ] Documentar a utilização do CloudWatch no README.
-- [ ] Manter o desenvolvimento local sem provisionar recursos pagos na AWS.
-
-> Nesta aula será estudada a observabilidade da aplicação utilizando Amazon CloudWatch, com foco nos logs das funções Lambda e no acompanhamento do processamento assíncrono.
+- [ ] Documentar as melhorias realizadas no README.
 
 ### Próximas etapas
 
@@ -650,12 +714,15 @@ npm test
 - [x] Testes unitários do fluxo assíncrono.
 - [x] Mocks para os componentes que comunicariam com a AWS.
 - [x] Validação da infraestrutura com `cdk synth`.
-
+- [x] Observabilidade com Amazon CloudWatch.
+- [x] Logs das funções Lambda.
+- [x] Log Groups definidos utilizando AWS CDK.
+- [x] Tratamento e registro de erros no processamento assíncrono.
 #### Ainda não realizadas
 
-- [ ] Observabilidade com Amazon CloudWatch.
-- [ ] CI/CD.
+
 - [ ] Melhorias de arquitetura, caso sejam necessárias.
+- [ ] CI/CD.
 - [ ] Revisão geral da infraestrutura e aplicação.
 - [ ] Melhorias na documentação da API.
 - [ ] Revisão e ampliação dos testes.
@@ -680,7 +747,7 @@ npm test
 - ✓ Aula 12 → Modelagem da infraestrutura serverless com CDK
 - ✓ Aula 13 → Processamento assíncrono com Amazon SQS
 - ✓ Aula 14 → Integração entre SQS e Lambda
-- Aula 15 → Observabilidade com Amazon CloudWatch
+- ✓ Aula 15 → Observabilidade com Amazon CloudWatch
 - Aula 16 → Melhorias de arquitetura
 - Aula 17 → CI/CD
 - Aula 18 → Revisão da infraestrutura e aplicação
