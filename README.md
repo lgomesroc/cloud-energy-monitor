@@ -22,8 +22,9 @@ Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless
   - [Aula 11 — AWS CDK e Infrastructure as Code](#aula-11--aws-cdk-e-infrastructure-as-code)
   - [Aula 12 — Modelagem da infraestrutura serverless com CDK](#aula-12--modelagem-da-infraestrutura-serverless-com-cdk)
   - [Aula 13 — Processamento assíncrono com Amazon SQS](#aula-13--processamento-assíncrono-com-amazon-sqs)
-- [Próxima aula](#próxima-aula)
   - [Aula 14 — Integração e testes do fluxo assíncrono](#aula-14--integração-e-testes-do-fluxo-assíncrono)
+- [Próxima aula](#próxima-aula)
+  - [Aula 15 — Observabilidade com Amazon CloudWatch](#aula-15--observabilidade-com-amazon-cloudwatch)
   - [Próximas etapas](#próximas-etapas)
   - [Resumo das aulas](#resumo-das-aulas)
 - [Iniciando](#iniciando)
@@ -111,6 +112,7 @@ cloud-energy-monitor/
 │   │   ├── energy.routes.test.ts
 │   │   └── energy.routes.ts
 │   ├── services/
+│   │   ├── energy-queue.service.test.ts
 │   │   ├── energy-queue.service.ts
 │   │   ├── energy.service.test.ts
 │   │   └── energy.service.ts
@@ -567,38 +569,100 @@ npm test
 
 > Nesta aula foi introduzido o processamento assíncrono utilizando Amazon SQS.
 
-## Próxima aula
-
 ### Aula 14 — Integração e testes do fluxo assíncrono
 
-- [ ] Revisar o fluxo **API Gateway → Lambda Producer → SQS → Lambda Consumer**.
-- [ ] Entender o papel de cada Lambda no processamento assíncrono.
-- [ ] Entender como o API Gateway encaminha uma requisição `POST` para o Producer.
-- [ ] Entender como o Producer envia uma mensagem para o SQS.
-- [ ] Entender como o SQS aciona o Consumer Lambda.
-- [ ] Validar o payload enviado para a fila.
-- [ ] Validar o recebimento de mensagens pelo Consumer Lambda.
-- [ ] Criar testes unitários para o **Energy Queue Service**.
-- [ ] Criar testes unitários para o **Energy Producer Handler**.
-- [ ] Criar testes unitários para o **Energy Consumer Handler**.
-- [ ] Utilizar mocks para testar o envio de mensagens sem acessar a AWS.
-- [ ] Garantir que os testes sejam executados localmente.
+- [x] Revisão do fluxo **API Gateway → Lambda Producer → SQS → Lambda Consumer**.
+- [x] Entendimento do papel de cada Lambda no processamento assíncrono.
+- [x] Entendimento de como o API Gateway encaminha uma requisição `POST` para o Producer.
+- [x] Entendimento de como o Producer envia uma mensagem para o SQS.
+- [x] Entendimento de como o SQS aciona o Consumer Lambda.
+- [x] Validação do payload enviado para a fila.
+- [x] Validação do recebimento de mensagens pelo Consumer Lambda.
+- [x] Criação de testes unitários para o **Energy Queue Service**.
+- [x] Criação de testes unitários para o **Energy Producer Handler**.
+- [x] Criação de testes unitários para o **Energy Consumer Handler**.
+- [x] Utilização de mocks para testar o envio de mensagens sem acessar a AWS.
+- [x] Execução dos testes localmente.
+- [x] Execução de `npx tsc --noEmit`.
+- [x] Execução de `npm run build`.
+- [x] Execução de `npm test`.
+- [x] Validação da compilação sem erros de TypeScript.
+- [x] Validação de todos os testes automatizados.
+- [x] Execução de `cdk synth`.
+- [x] Validação da infraestrutura definida pelo AWS CDK.
+- [x] Revisão da integração entre SQS e Lambda.
+- [x] Documentação do fluxo assíncrono no README.
+- [x] Manutenção da arquitetura simples e compatível com um projeto de nível Júnior.
+
+> Nesta aula foi concluída a integração conceitual e estrutural do fluxo assíncrono **API Gateway → Lambda Producer → SQS → Lambda Consumer**.
+
+> Foram criados testes unitários para o serviço responsável pelo envio das mensagens e para os Lambdas Producer e Consumer, utilizando mocks para manter os testes independentes de recursos reais da AWS.
+
+> O fluxo continua sendo estudado e validado localmente, sem provisionamento de recursos pagos na AWS.
+
+## Próxima aula
+
+## Próxima aula
+
+### Aula 15 — Observabilidade com Amazon CloudWatch
+
+- [ ] Entender o conceito de observabilidade em aplicações.
+- [ ] Entender o papel do Amazon CloudWatch.
+- [ ] Entender o funcionamento dos logs de execução do AWS Lambda.
+- [ ] Entender o conceito de Log Group e Log Stream.
+- [ ] Adicionar logs relevantes ao Lambda Producer.
+- [ ] Adicionar logs relevantes ao Lambda Consumer.
+- [ ] Registrar informações importantes durante o processamento das mensagens.
+- [ ] Registrar erros durante o processamento.
+- [ ] Evitar exposição de informações sensíveis nos logs.
+- [ ] Modelar o Log Group utilizando AWS CDK.
+- [ ] Revisar a configuração de retenção dos logs.
+- [ ] Executar `cdk synth`.
+- [ ] Analisar os recursos de CloudWatch Logs gerados pelo CDK.
 - [ ] Executar `npx tsc --noEmit`.
 - [ ] Executar `npm run build`.
 - [ ] Executar `npm test`.
-- [ ] Garantir que o projeto finalize com **0 erros de TypeScript e todos os testes passando**.
-- [ ] Executar `cdk synth` para validar a infraestrutura.
-- [ ] Revisar as alterações realizadas na infraestrutura.
-- [ ] Documentar a integração assíncrona no README.
-- [ ] Manter a arquitetura simples e compatível com um projeto de nível Júnior.
+- [ ] Garantir que todos os testes continuem passando.
+- [ ] Documentar a utilização do CloudWatch no README.
+- [ ] Manter o desenvolvimento local sem provisionar recursos pagos na AWS.
+
+> Nesta aula será estudada a observabilidade da aplicação utilizando Amazon CloudWatch, com foco nos logs das funções Lambda e no acompanhamento do processamento assíncrono.
 
 ### Próximas etapas
 
-- [ ] Estudar observabilidade com Amazon CloudWatch.
-- [ ] Adicionar CI/CD.
-- [ ] Melhorar a documentação da API.
-- [ ] Evoluir gradualmente a arquitetura serverless.
-- [ ] Documentar a arquitetura final.
+#### Já realizadas
+
+- [x] Configuração inicial da aplicação.
+- [x] API HTTP com Express.
+- [x] Organização em Route, Service e Repository.
+- [x] Testes automatizados com Vitest.
+- [x] Testes HTTP com Supertest.
+- [x] Persistência com DynamoDB Local.
+- [x] Paginação utilizando recursos do DynamoDB.
+- [x] AWS Lambda.
+- [x] API Gateway + Lambda.
+- [x] Configuração por ambiente.
+- [x] AWS CDK e Infrastructure as Code.
+- [x] Modelagem da infraestrutura serverless.
+- [x] Amazon SQS.
+- [x] Processamento assíncrono.
+- [x] Integração Producer → SQS → Consumer.
+- [x] Testes unitários do fluxo assíncrono.
+- [x] Mocks para os componentes que comunicariam com a AWS.
+- [x] Validação da infraestrutura com `cdk synth`.
+
+#### Ainda não realizadas
+
+- [ ] Observabilidade com Amazon CloudWatch.
+- [ ] CI/CD.
+- [ ] Melhorias de arquitetura, caso sejam necessárias.
+- [ ] Revisão geral da infraestrutura e aplicação.
+- [ ] Melhorias na documentação da API.
+- [ ] Revisão e ampliação dos testes.
+- [ ] Documentação da arquitetura final.
+- [ ] Revisão final do projeto e preparação para portfólio.
+
+> O projeto continuará evoluindo de forma incremental, priorizando conceitos relevantes para uma aplicação backend/serverless sem adicionar tecnologias ou complexidade desnecessárias.
 
 ### Resumo das aulas
 
@@ -615,7 +679,7 @@ npm test
 - ✓ Aula 11 → AWS CDK e Infrastructure as Code
 - ✓ Aula 12 → Modelagem da infraestrutura serverless com CDK
 - ✓ Aula 13 → Processamento assíncrono com Amazon SQS
-- Aula 14 → Integração entre SQS e Lambda
+- ✓ Aula 14 → Integração entre SQS e Lambda
 - Aula 15 → Observabilidade com Amazon CloudWatch
 - Aula 16 → Melhorias de arquitetura
 - Aula 17 → CI/CD
