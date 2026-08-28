@@ -6,8 +6,6 @@ Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless
 
 - [Objetivo](#objetivo)
 - [Tecnologias](#tecnologias)
-  - [Atualmente utilizadas](#atualmente-utilizadas)
-  - [Planejadas](#planejadas)
 - [Estrutura atual](#estrutura-atual)
 - [Arquitetura atual](#arquitetura-atual)
 - [Status](#status)
@@ -51,8 +49,6 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 
 ## Tecnologias
 
-### Atualmente utilizadas
-
 - **Node.js 24.19.0** — ambiente de execução utilizado para a aplicação e para os recursos em TypeScript.
 - **TypeScript 7.0.2** — linguagem utilizada no desenvolvimento da aplicação, dos Lambda Handlers e da infraestrutura com AWS CDK.
 - **Express 5.2.1** — framework HTTP utilizado na primeira fase da aplicação, permitindo desenvolver e testar a API localmente.
@@ -66,13 +62,10 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 - **AWS CloudFormation** — utilizado como camada de infraestrutura gerada pelo AWS CDK. O `cdk synth` gera um template CloudFormation que representa os recursos definidos na Stack.
 - **Amazon CloudWatch Logs** — utilizado para registrar os logs de execução da função Lambda. O Log Group da Lambda é criado na infraestrutura gerada pelo CDK.
 - **AWS CDK** — utilizado para definir a infraestrutura AWS como código, permitindo modelar DynamoDB, Lambda, API Gateway, IAM e recursos relacionados utilizando TypeScript.
+- **Amazon SQS** — mensageria assíncrona entre Producer e Consumer
 - **Docker** — utilizado para executar o DynamoDB Local em um container.
 - **Git** — utilizado para controle de versão do projeto.
 - **VS Code** — editor utilizado no desenvolvimento da aplicação.
-
-### Planejadas
-
-- Amazon SQS
 
 > Os serviços AWS listados como planejados ainda não fazem parte da implementação atual.
 
@@ -94,8 +87,8 @@ cloud-energy-monitor/
 │   └── tsconfig.json
 ├── src/
 │   ├── config/
-│   │   ├── dynamodb.ts
 │   │   ├── create-table.ts
+│   │   ├── dynamodb.ts
 │   │   ├── insert-reading.ts
 │   │   ├── list-readings.ts
 │   │   └── query-readings.ts
@@ -104,25 +97,29 @@ cloud-energy-monitor/
 │   ├── domain/
 │   │   └── energy-reading.ts
 |   ├── handlers/
-│   │   ├── energy.handler.ts
+│   │   ├── energy-consumer.handler.test.ts
+│   │   ├── energy-consumer.handler.ts
+│   │   ├── energy-producer.handler.ts
 │   │   ├── energy.handler.test.ts
+│   │   ├── energy.handler.ts
 │   │   └── test-handler.ts
 │   ├── repositories/
 │   │   ├── energy.repository.ts
 │   │   └── energy.repository.test.ts
 │   ├── routes/
-│   │   ├── energy.routes.ts
-│   │   └── energy.routes.test.ts
+│   │   ├── energy.routes.test.ts
+│   │   └── energy.routes.ts
 │   ├── services/
-│   │   ├── energy.service.ts
-│   │   └── energy.service.test.ts
+│   │   ├── energy-queue.service.ts
+│   │   ├── energy.service.test.ts
+│   │   └── energy.service.ts
 │   ├── index.ts
 │   └── server.ts
 ├── .env.example
 ├── .gitignore
-├── README.md
-├── package.json
 ├── package-lock.json
+├── package.json
+├── README.md
 └── tsconfig.json
 └── vitest.config.ts
 ```
@@ -194,9 +191,118 @@ O projeto utiliza uma separação simples de responsabilidades:
 
 > **O Handler passa a atuar como uma alternativa à Route na arquitetura serverless, mantendo as camadas de Service e Repository separadas e reutilizáveis.**
 
+### Processamento assíncrono
+
+A aplicação utiliza Amazon SQS para desacoplar o recebimento das leituras de energia do processamento das mensagens.
+
+A fila utilizada pelo projeto é:
+
+```text
+cloud-energy-monitor-queue
+```
+
+O Producer é responsável por enviar mensagens para a fila.
+
+O Consumer é responsável por receber as mensagens encaminhadas pelo SQS.
+
+A integração entre SQS e Lambda é definida utilizando AWS CDK.
+
+O projeto utiliza uma fila Amazon SQS para desacoplar o recebimento das leituras de energia do processamento das mensagens.
+
+O fluxo é:
+
+1. A API recebe uma nova leitura através do endpoint `POST /api/energy`.
+2. A `Energy Producer Lambda` envia a mensagem para a fila SQS.
+3. A fila mantém a mensagem até que ela seja processada.
+4. A `Energy Consumer Lambda` é acionada pelo evento da fila.
+5. O Consumer recebe e processa as mensagens individualmente.
+
+### Endpoints
+
+| Método | Endpoint | Descrição |
+|---|---|---|
+| GET | `/api/energy` | Retorna as leituras de energia |
+| GET | `/api/energy/{deviceId}` | Retorna as leituras de um dispositivo |
+| POST | `/api/energy` | Envia uma nova leitura de energia para processamento assíncrono |
+
+### Infraestrutura
+
+A infraestrutura do projeto é definida utilizando AWS CDK e contempla:
+
+- DynamoDB para armazenamento das leituras de energia
+- Amazon SQS para processamento assíncrono
+- AWS Lambda para processamento da API, Producer e Consumer
+- API Gateway para exposição dos endpoints HTTP
+
+A infraestrutura do projeto é definida utilizando AWS CDK.
+
+Os componentes definidos são:
+
+- DynamoDB
+- Amazon SQS
+- AWS Lambda
+- Amazon API Gateway
+
+A tabela DynamoDB utiliza:
+
+- `deviceId` como chave de partição
+- `timestamp` como chave de ordenação numérica
+- `PAY_PER_REQUEST` como modo de cobrança
+
+A fila SQS utiliza:
+
+- Visibility Timeout de 30 segundos
+- Retenção de mensagens por 4 dias
+
+A infraestrutura pode ser sintetizada utilizando:
+A infraestrutura do projeto é definida utilizando AWS CDK.
+
+Os componentes definidos são:
+
+DynamoDB
+Amazon SQS
+AWS Lambda
+Amazon API Gateway
+
+A tabela DynamoDB utiliza:
+
+deviceId como chave de partição
+timestamp como chave de ordenação numérica
+PAY_PER_REQUEST como modo de cobrança
+
+A fila SQS utiliza:
+
+Visibility Timeout de 30 segundos
+Retenção de mensagens por 4 dias
+
+A infraestrutura pode ser sintetizada utilizando:
+
+```bash
+cd infra
+npx cdk synth
+```
+
+O comando gera o template CloudFormation sem necessidade de realizar o deploy dos recursos.
+
+### Testes
+
+Os testes automatizados são executados com Vitest.
+
+Atualmente o projeto possui:
+
+- 22 testes
+- 5 arquivos de teste
+- Todos os testes passando
+
+Para executar:
+
+```text
+npm test
+```
+
 ## Status
 
-**Em desenvolvimento — Dia 12 concluído.**
+**Em desenvolvimento — Aula 13 concluído.**
 
 ### Aula 1 - Configuração inicial e criação da API
 
@@ -462,32 +568,52 @@ O projeto utiliza uma separação simples de responsabilidades:
 
 > A infraestrutura continua sendo apenas sintetizada localmente. O `cdk deploy` não foi executado e os recursos reais da AWS não foram provisionados.
 
-## Próxima aula
-
 ### Aula 13 — Processamento assíncrono com Amazon SQS
 
-- [ ] Entender o conceito de processamento assíncrono.
-- [ ] Entender o funcionamento do Amazon SQS.
-- [ ] Entender a diferença entre processamento síncrono e assíncrono.
-- [ ] Entender o conceito de fila de mensagens.
-- [ ] Modelar uma fila SQS utilizando AWS CDK.
-- [ ] Estudar o envio de mensagens para uma fila.
-- [ ] Estudar o consumo de mensagens por uma aplicação.
-- [ ] Entender a integração entre SQS e AWS Lambda.
-- [ ] Relacionar API Gateway → Lambda → SQS.
-- [ ] Executar `cdk synth`.
-- [ ] Analisar o template CloudFormation gerado.
-- [ ] Manter o desenvolvimento sem provisionar recursos pagos na AWS.
-- [ ] Documentar as alterações no README.
+- [x] Conteúdos estudados
+- [x] Entender o conceito de processamento assíncrono.
+- [x] Entender o funcionamento do Amazon SQS.
+- [x] Entender a diferença entre processamento síncrono e assíncrono.
+- [x] Entender o conceito de fila de mensagens.
+- [x] Modelar uma fila SQS utilizando AWS CDK.
+- [x] Estudar o envio de mensagens para uma fila.
+- [x] Estudar o consumo de mensagens por uma aplicação.
+- [x] Entender a integração entre SQS e AWS Lambda.
+- [x] Relacionar API Gateway → Lambda → SQS.
+- [x] Executar cdk synth.
+- [x] Analisar o template CloudFormation gerado.
+- [x] Manter o desenvolvimento sem provisionar recursos pagos na AWS.
+- [x] Documentar as alterações no README.
 
-> A Aula 13 introduzirá o processamento assíncrono utilizando Amazon SQS. A fila será modelada utilizando AWS CDK, mantendo o projeto dentro da abordagem de Infrastructure as Code e sem necessidade de provisionar recursos reais na AWS.
+> Nesta aula foi introduzido o processamento assíncrono utilizando Amazon SQS.
+
+## Próxima aula
+
+### Aula 14 — Integração e testes do fluxo assíncrono
+
+- [ ] Revisar o fluxo **API Gateway → Lambda Producer → SQS → Lambda Consumer**.
+- [ ] Entender o papel de cada Lambda no processamento assíncrono.
+- [ ] Entender como o API Gateway encaminha uma requisição `POST` para o Producer.
+- [ ] Entender como o Producer envia uma mensagem para o SQS.
+- [ ] Entender como o SQS aciona o Consumer Lambda.
+- [ ] Validar o payload enviado para a fila.
+- [ ] Validar o recebimento de mensagens pelo Consumer Lambda.
+- [ ] Criar testes unitários para o **Energy Queue Service**.
+- [ ] Criar testes unitários para o **Energy Producer Handler**.
+- [ ] Criar testes unitários para o **Energy Consumer Handler**.
+- [ ] Utilizar mocks para testar o envio de mensagens sem acessar a AWS.
+- [ ] Garantir que os testes sejam executados localmente.
+- [ ] Executar `npx tsc --noEmit`.
+- [ ] Executar `npm run build`.
+- [ ] Executar `npm test`.
+- [ ] Garantir que o projeto finalize com **0 erros de TypeScript e todos os testes passando**.
+- [ ] Executar `cdk synth` para validar a infraestrutura.
+- [ ] Revisar as alterações realizadas na infraestrutura.
+- [ ] Documentar a integração assíncrona no README.
+- [ ] Manter a arquitetura simples e compatível com um projeto de nível Júnior.
 
 ### Próximas etapas
 
-- [ ] Estudar processamento assíncrono.
-- [ ] Introduzir Amazon SQS.
-- [ ] Modelar uma fila SQS utilizando AWS CDK.
-- [ ] Estudar integração entre Amazon SQS e AWS Lambda.
 - [ ] Estudar observabilidade com Amazon CloudWatch.
 - [ ] Adicionar CI/CD.
 - [ ] Melhorar a documentação da API.
@@ -508,7 +634,7 @@ O projeto utiliza uma separação simples de responsabilidades:
 - ✓ Aula 10 → Configuração por ambiente e preparação para AWS
 - ✓ Aula 11 → AWS CDK e Infrastructure as Code
 - ✓ Aula 12 → Modelagem da infraestrutura serverless com CDK
-- Aula 13 → Processamento assíncrono com Amazon SQS
+- ✓ Aula 13 → Processamento assíncrono com Amazon SQS
 - Aula 14 → Integração entre SQS e Lambda
 - Aula 15 → Observabilidade com Amazon CloudWatch
 - Aula 16 → Melhorias de arquitetura
