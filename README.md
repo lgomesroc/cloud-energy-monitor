@@ -24,12 +24,13 @@ Projeto de estudo e portfólio desenvolvido para explorar arquitetura serverless
   - [Aula 13 — Processamento assíncrono com Amazon SQS](#aula-13--processamento-assíncrono-com-amazon-sqs)
   - [Aula 14 — Integração e testes do fluxo assíncrono](#aula-14--integração-e-testes-do-fluxo-assíncrono)
   - [Aula 15 — Observabilidade com Amazon CloudWatch](#aula-15--observabilidade-com-amazon-cloudwatch)
+  - [Aula 16 — CI com GitHub Actions](#aula-16--ci-com-github-actions)
 - [Próxima aula](#próxima-aula)
-  - [Aula 16 — CI/CD com GitHub Actions](#aula-16--cicd-com-github-actions)
-  - [Aula 17 — Introdução ao Frontend](#aula-17--introdução-ao-frontend)
-  - [Aula 18 — Integração Frontend + Backend](#aula-18--integração-frontend--backend)
-  - [Aula 19 — Publicação e preparação para portfólio](#aula-19--publicação-e-preparação-para-portfólio)
-  - [Aula 20 — Revisão final e projeto](#aula-20--revisão-final-e-projeto)
+  - [Aula 17 — CD com GitHub Actions](#aula-17--cd-com-github-actions)
+  - [Aula 18 — Introdução ao Frontend](#aula-18--introdução-ao-frontend)
+  - [Aula 19 — Integração Frontend + Backend](#aula-19--integração-frontend--backend)
+  - [Aula 20 — Publicação e preparação para portfólio](#aula-20--publicação-e-preparação-para-portfólio)
+  - [Aula 21 — Revisão final e projeto](#aula-21--revisão-final-e-projeto)
   - [Próximas etapas](#próximas-etapas)
   - [Resumo das aulas](#resumo-das-aulas)
 - [Iniciando](#iniciando)
@@ -73,6 +74,7 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 - **Docker** — utilizado para executar o DynamoDB Local em um container.
 - **Git** — utilizado para controle de versão do projeto.
 - **VS Code** — editor utilizado no desenvolvimento da aplicação.
+- **GitHub Actions** — utilizado para implementar o workflow de Integração Contínua (CI), executando automaticamente verificações do projeto em eventos de `push` e `pull_request`.
 
 > Os serviços AWS listados como planejados ainda não fazem parte da implementação atual.
 
@@ -328,7 +330,7 @@ npm test
 
 ## Status
 
-**Em desenvolvimento — Aula 15 concluído.**
+**Em desenvolvimento — Aula 16 concluído.**
 
 ### Aula 1 - Configuração inicial e criação da API
 
@@ -679,23 +681,140 @@ npm test
 
 > O projeto continua sendo executado localmente e a infraestrutura continua sendo apenas sintetizada com `cdk synth`, sem provisionamento de recursos reais na AWS.
 
+### Aula 16 — CI com GitHub Actions
+
+#### Conceitos
+
+- [x] Entender o conceito de CI (Continuous Integration)
+- [x] Entender o conceito de CD (Continuous Delivery / Continuous Deployment) como etapa posterior do projeto
+- [x] Entender a diferença entre CI e CD
+- [x] Entender que o projeto utiliza CI neste momento
+- [x] Entender o papel do GitHub Actions
+- [x] Entender o conceito de Workflow
+- [x] Entender o conceito de Job
+- [x] Entender o conceito de Step
+- [x] Entender o conceito de Runner
+- [x] Entender o conceito de Trigger
+- [x] Entender a diferença entre `uses` e `run`
+- [x] Entender o significado do código de saída dos comandos
+- [x] Entender como uma falha em uma etapa interrompe o Job
+
+#### Criação do workflow
+
+- [x] Criar o diretório `.github/workflows/`
+- [x] Criar o arquivo `.github/workflows/ci.yml`
+- [x] Definir o nome do workflow
+- [x] Configurar o evento `push`
+- [x] Configurar o evento `pull_request`
+- [x] Criar um Job de CI
+- [x] Configurar `ubuntu-latest` como Runner
+- [x] Utilizar `actions/checkout@v4`
+- [x] Utilizar `actions/setup-node@v4`
+- [x] Configurar Node.js 24
+- [x] Configurar instalação das dependências com `npm ci`
+
+#### Validação automática
+
+- [x] Executar `npx tsc --noEmit`
+- [x] Executar `npm test`
+- [x] Executar `npm run build`
+- [x] Validar o pipeline após um `push`
+- [x] Validar o pipeline após um Pull Request
+- [x] Confirmar execução de todos os testes automatizados no GitHub Actions
+- [x] Confirmar execução do build no GitHub Actions
+
+#### Teste de falha do CI
+
+- [x] Provocar propositalmente um erro de TypeScript
+- [x] Alterar temporariamente `consumptionKwh` de `number` para `string`
+- [x] Fazer commit da alteração proposital
+- [x] Enviar a alteração para o GitHub
+- [x] Observar o pipeline falhar
+- [x] Analisar os erros gerados pelo TypeScript
+- [x] Identificar o erro `Type 'number' is not assignable to type 'string'`
+- [x] Corrigir o erro
+- [x] Executar novamente o pipeline
+- [x] Confirmar o retorno do pipeline para `Success`
+
+#### Teste de falha dos testes automatizados
+
+- [x] Provocar propositalmente uma falha em um teste
+- [x] Alterar temporariamente uma expectativa do teste do Repository
+- [x] Executar os testes localmente e observar a falha
+- [x] Enviar a alteração para o GitHub
+- [x] Observar o CI falhar durante a etapa de testes
+- [x] Analisar a mensagem de falha gerada pelo Vitest
+- [x] Corrigir o teste
+- [x] Executar novamente o pipeline
+- [x] Confirmar o retorno do pipeline para `Success`
+
+#### Pull Request e fluxo de branches
+
+- [x] Criar uma branch específica para a alteração
+- [x] Trabalhar na branch `docs/aula-16-ci`
+- [x] Criar uma segunda branch para praticar o fluxo de Pull Request
+- [x] Fazer commit das alterações
+- [x] Enviar a branch para o GitHub
+- [x] Criar Pull Requests
+- [x] Entender a relação entre Pull Request e CI
+- [x] Executar o workflow através do evento `pull_request`
+- [x] Validar os Checks do Pull Request
+- [x] Confirmar que todos os Checks passaram
+- [x] Verificar ausência de conflitos com a `main`
+- [x] Realizar o merge dos Pull Requests
+- [x] Atualizar a branch `main` local após o merge
+- [x] Entender a diferença entre a branch local e a branch remota
+- [x] Analisar o histórico utilizando `git log --oneline --graph --decorate --all`
+
+#### O que foi observado na prática
+
+- [x] Observar um pipeline com status `Success`
+- [x] Observar um pipeline com status `Failure`
+- [x] Entender a diferença entre erro do projeto e warning da infraestrutura do GitHub Actions
+- [x] Analisar as anotações geradas pelo GitHub Actions
+- [x] Entender que o CI executa comandos que também podem ser executados localmente
+- [x] Entender que o GitHub Actions automatiza essas verificações
+- [x] Entender que o CI ajuda a detectar problemas antes do merge
+- [x] Entender que o merge de um Pull Request não representa automaticamente um deployment
+- [x] Entender que CI e CD são etapas relacionadas, mas possuem objetivos diferentes
+
+#### Workflow final
+
+- [x] Revisar o funcionamento completo do workflow
+- [x] Revisar `name`, `on`, `jobs`, `runs-on`, `steps`, `uses`, `with` e `run`
+- [x] Entender o fluxo completo de execução do GitHub Actions
+- [x] Revisar a configuração final do `ci.yml`
+- [x] Validar o workflow através de `push`
+- [x] Validar o workflow através de `pull_request`
+- [x] Fazer a revisão final da Aula 16
+
+> Nesta aula foi implementada a Integração Contínua (CI) utilizando GitHub Actions. O workflow executa automaticamente a verificação de TypeScript, os testes automatizados e o build do projeto em eventos de `push` e `pull_request`.
+
+> Durante a aula foram provocadas falhas propositalmente para observar o comportamento do pipeline, incluindo uma falha de compilação TypeScript e uma falha de teste automatizado.
+
+> Também foi praticado o fluxo de desenvolvimento utilizando branches, Pull Requests, validação automática e merge na `main`.
+
+> O Continuous Delivery / Continuous Deployment (CD) será estudado separadamente na próxima aula.
+
 ## Próxima aula
 
-### Aula 16 — CI/CD com GitHub Actions
+### Aula 17 — CD com GitHub Actions
 
-- [x] Entender o conceito de CI/CD
-- [x] Entender o papel do GitHub Actions
-- [x] Criar um workflow de CI
-- [x] Executar instalação das dependências
-- [x] Executar npx tsc --noEmit
-- [x] Executar npm test
-- [x] Executar npm run build
-- [x] Configurar execução automática no push
-- [x] Configurar execução em Pull Request
-- [x] Validar o pipeline
-- [ ] Documentar o CI/CD no README
+- [ ] Entender o conceito de Continuous Delivery
+- [ ] Entender o conceito de Continuous Deployment
+- [ ] Entender a diferença entre Delivery e Deployment
+- [ ] Entender como o CD se relaciona com o CI
+- [ ] Entender o fluxo CI → CD
+- [ ] Estudar artefatos de build
+- [ ] Estudar etapas de publicação e deployment
+- [ ] Entender secrets e credenciais em GitHub Actions
+- [ ] Entender a integração entre GitHub Actions e AWS
+- [ ] Avaliar uma estratégia de deployment compatível com o projeto
+- [ ] Manter o projeto sem provisionamento de recursos pagos na AWS
+- [ ] Definir se o deployment real será realizado ou apenas estudado
+- [ ] Documentar o fluxo de CD no README
 
-### Aula 17 — Introdução ao Frontend
+### Aula 18 — Introdução ao Frontend
 
 - [ ] Definir a estrutura do frontend
 - [ ] Criar a interface inicial do Cloud Energy Monitor
@@ -707,7 +826,7 @@ npm test
 - [ ] Preparar o frontend para consumir a API
 - [ ] Manter a solução simples, sem framework desnecessário
 
-### Aula 18 — Integração Frontend + Backend
+### Aula 19 — Integração Frontend + Backend
 
 - [ ] Conectar o frontend à API
 - [ ] Consumir GET /api/energy
@@ -719,7 +838,7 @@ npm test
 - [ ] Validar a comunicação entre frontend e backend
 - [ ] Testar o fluxo completo da aplicação
 
-### Aula 19 — Publicação e preparação para portfólio
+### Aula 20 — Publicação e preparação para portfólio
 
 - [ ] Revisar a estrutura final do projeto
 - [ ] Revisar frontend e backend
@@ -732,7 +851,7 @@ npm test
 - [ ] Revisar informações apresentadas ao usuário
 - [ ] Preparar o projeto para apresentação em processos seletivos
 
-### Aula 20 — Revisão final e projeto
+### Aula 21 — Revisão final e projeto
 
 - [ ] Revisão geral da arquitetura
 - [ ] Revisão do fluxo síncrono
@@ -777,16 +896,23 @@ npm test
 - [x] Logs das funções Lambda.
 - [x] Log Groups definidos utilizando AWS CDK.
 - [x] Tratamento e registro de erros no processamento assíncrono.
+- [x] GitHub Actions.
+- [x] Workflow de CI.
+- [x] CI executado em push.
+- [x] CI executado em Pull Request.
+- [x] Validação automática de TypeScript, testes e build.
+
 #### Ainda não realizadas
 
+* [ ] Introdução ao frontend.
+* [ ] Integração frontend + backend.
+* [ ] Publicação do frontend, caso seja viável sem custos.
+* [ ] Revisão geral da infraestrutura e aplicação.
+* [ ] Melhorias na documentação da API.
+* [ ] Revisão e ampliação dos testes.
+* [ ] Documentação da arquitetura final.
+* [ ] Revisão final do projeto e preparação para portfólio.
 
-- [ ] Melhorias de arquitetura, caso sejam necessárias.
-- [ ] CI/CD.
-- [ ] Revisão geral da infraestrutura e aplicação.
-- [ ] Melhorias na documentação da API.
-- [ ] Revisão e ampliação dos testes.
-- [ ] Documentação da arquitetura final.
-- [ ] Revisão final do projeto e preparação para portfólio.
 
 > O projeto continuará evoluindo de forma incremental, priorizando conceitos relevantes para uma aplicação backend/serverless sem adicionar tecnologias ou complexidade desnecessárias.
 
@@ -807,11 +933,12 @@ npm test
 - ✓ Aula 13 → Processamento assíncrono com Amazon SQS
 - ✓ Aula 14 → Integração entre SQS e Lambda
 - ✓ Aula 15 → Observabilidade com Amazon CloudWatch
-- Aula 16 → CI/CD com GitHub Actions
-- Aula 17 → Introdução ao Frontend
-- Aula 18 → Integração Frontend + Backend
-- Aula 19 → Publicação e preparação para portfólio
-- Aula 20 → Revisão final e projeto
+- ✓ Aula 16 → CI com GitHub Actions
+- Aula 17 → CD com GitHub Actions
+- Aula 18 → Introdução ao Frontend
+- Aula 19 → Integração Frontend + Backend
+- Aula 20 → Publicação e preparação para portfólio
+- Aula 21 → Revisão final e projeto
 
 ## Iniciando
 
