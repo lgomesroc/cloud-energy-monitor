@@ -25,7 +25,7 @@ describe("Energy Repository", () => {
 
     const result = await findAllEnergyReadings(2);
 
-    expect(result.readings).toHaveLength(3);
+    expect(result.readings).toHaveLength(2);
     expect(result.lastEvaluatedKey).toBeDefined();
   });
 
