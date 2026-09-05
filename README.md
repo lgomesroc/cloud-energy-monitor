@@ -79,6 +79,9 @@ O projeto será desenvolvido inicialmente de forma local, permitindo estudar os 
 ## Estrutura atual
 ```text
 cloud-energy-monitor/
+├── .github/
+│   └── workflows/
+│   │   └── ci.yml
 ├── infra/
 │   ├── bin/
 │   │   └── infra.ts
@@ -680,16 +683,16 @@ npm test
 
 ### Aula 16 — CI/CD com GitHub Actions
 
-- [ ] Entender o conceito de CI/CD
-- [ ] Entender o papel do GitHub Actions
-- [ ] Criar um workflow de CI
-- [ ] Executar instalação das dependências
-- [ ] Executar npx tsc --noEmit
-- [ ] Executar npm test
-- [ ] Executar npm run build
-- [ ] Configurar execução automática no push
-- [ ] Configurar execução em Pull Request
-- [ ] Validar o pipeline
+- [x] Entender o conceito de CI/CD
+- [x] Entender o papel do GitHub Actions
+- [x] Criar um workflow de CI
+- [x] Executar instalação das dependências
+- [x] Executar npx tsc --noEmit
+- [x] Executar npm test
+- [x] Executar npm run build
+- [x] Configurar execução automática no push
+- [x] Configurar execução em Pull Request
+- [x] Validar o pipeline
 - [ ] Documentar o CI/CD no README
 
 ### Aula 17 — Introdução ao Frontend
